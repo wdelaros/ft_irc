@@ -24,11 +24,11 @@ ERASE_LINE	=	\033[2K\r
 
 # Compiler and flags
 CC			=	c++
-CFLAGS		=	-Wall -Werror -Wextra -std=c++98
+CFLAGS		=	-std=c++11
 RM			=	rm -rf
 
 # Sources are all .cpp files
-SRCS		=	
+SRCS		=	main.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))
@@ -47,7 +47,7 @@ $(NAME): $(OBJS)
 	$(GREEN) ✔️$(RESET)"
 
 # Compiles sources into objects
-$(OBJS_DIR)%.o: %.cpp
+$(OBJS_DIR)%.o: src/%.cpp
 	@printf "$(ERASE_LINE)⚙️ $(PURPLE)Compiling $(DEFAULT)⚙️$(YELLOW) $(notdir $<)\
 	$(RESET)"
 	@$(CC) $(CFLAGS) -c $< -o $@
