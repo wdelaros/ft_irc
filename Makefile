@@ -24,11 +24,12 @@ ERASE_LINE	=	\033[2K\r
 
 # Compiler and flags
 CC			=	c++
-CFLAGS		=	-std=c++11
+CFLAGS		=	-std=c++98
 RM			=	rm -rf
 
 # Sources are all .cpp files
 SRCS		=	main.cpp \
+				IRC.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))
