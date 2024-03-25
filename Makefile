@@ -24,13 +24,17 @@ ERASE_LINE	=	\033[2K\r
 
 # Compiler and flags
 CC			=	c++
-CFLAGS		=	-std=c++98
+CFLAGS		=	-Wall -Wextra -Werror -std=c++98
 RM			=	rm -rf
 
 # Sources are all .cpp files
 SRCS		=	main.cpp \
 				Server.cpp \
 				User.cpp \
+				Command.cpp \
+				Ping.cpp \
+				PrivMsg.cpp \
+				Nickname.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))
@@ -47,8 +51,6 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo "$(ERASE_LINE)$(GREEN)✔️ $(ITALIC)$(NAME) successfully compile.$(RESET)\
 	$(GREEN) ✔️ $(RESET)"
-	@printf "$(ITALIC)	Your ip is: "
-	@hostname -I
 
 # Compiles sources into objects
 $(OBJS_DIR)%.o: src/%.cpp
@@ -74,7 +76,3 @@ fclean: clean
 re: fclean all
 	@echo "$(ERASE_LINE)$(GREEN)✔️ $(ITALIC)Remake complete$(RESET)\
 	$(GREEN) ✔️$(RESET)"
-
-ip:
-	@printf "$(ITALIC)	Your ip is: "
-	@hostname -I

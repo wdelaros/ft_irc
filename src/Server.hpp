@@ -1,11 +1,14 @@
 #pragma once
 
+#include "Command.hpp"
 #include "User.hpp"
 #include <map>
 #include <netinet/in.h>
 #include <string>
 #include <vector>
 #include <poll.h>
+
+class Command;
 
 class Server {
 	private:
@@ -29,6 +32,8 @@ class Server {
 		void acceptConnection();
 		void disconnectUser(int i, int& fd);
 		void userCreation(const int& fd);
-		const std::string Auth(std::vector<std::string> buffer, User &eventUser);
+		bool nicknameInUse(const std::string& nickname);
+		const std::string Auth(Command *cmd, std::vector<std::string>& buffer, User &eventUser);
 		void handleMsg(const std::string& msg, User& eventUser);
+		std::string sendPrivMsg(const std::string& msg, const std::string& nickname);
 };

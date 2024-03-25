@@ -1,6 +1,6 @@
 #include "Server.hpp"
+#include "Command.hpp"
 #include "User.hpp"
-#include <asm-generic/errno.h>
 #include <cerrno>
 #include <cstddef>
 #include <cstdio>
@@ -20,9 +20,8 @@
 #ifdef __linux
 # include <endian.h>
 # include <sys/socket.h>
+# include <asm-generic/errno.h>
 #else
-# include <cstdint>
-# include <sstream>
 # include <sys/_endian.h>
 # include <sys/_types/_socklen_t.h>
 #endif
@@ -47,12 +46,16 @@ Server::Server(char **argv): _userCount(0) {
 	if (_password.empty())
 		throw std::invalid_argument("Error: empty password!");
 
-	
 	_address.sin_port = htons(atoi(port.c_str()));
 	_address.sin_family = AF_INET;
 	_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	fd = socket(_address.sin_family, SOCK_STREAM, 0);
 	if (fd == -1)
+		throw std::runtime_error(strerror(errno));
+	struct linger l;
+	l.l_onoff = 1;
+	l.l_linger = 0;
+	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &l, sizeof(l)) == -1)
 		throw std::runtime_error(strerror(errno));
 	fcntl(fd, F_SETFL, O_NONBLOCK);
 	if (bind(fd, (struct sockaddr*)&_address, sizeof(_address)) == -1) {
@@ -113,7 +116,7 @@ void Server::disconnectUser(int i, int& fd) {
 
 void Server::run() {
 	int fd;
-	char buffer[BUFSIZ];
+	char buffer[BUFSIZ * 8];
 	while (!g_stop) {
 		if (poll(_poll.data(), _userCount + 1, 0) == -1)
 			throw std::invalid_argument(strerror(errno));
@@ -128,7 +131,7 @@ void Server::run() {
 			}
 			else if(_poll[i].revents & POLLIN) {
 				User& eventUser = *_listUser[fd];
-				int ret = recv(_poll[i].fd, buffer, BUFSIZ, MSG_DONTWAIT);
+				int ret = recv(_poll[i].fd, buffer, BUFSIZ * 8, MSG_DONTWAIT);
 				if (ret <= 0) {
 					disconnectUser(i, fd);
 					continue ;
@@ -140,41 +143,34 @@ void Server::run() {
 	}
 }
 
-const std::string Server::Auth(std::vector<std::string> buffer, User &eventUser) {
+const std::string Server::Auth(Command *cmd, std::vector<std::string>& buffer, User &eventUser) {
 	std::string msg;
-	std::string tmp;
 
-	if (!buffer.front().compare(0, 5, "PING "))
-		msg = "PINGPONG";
-	else if (!eventUser.getHavePass()) {
+	if (!eventUser.getHavePass()) {
 		if (!buffer.front().compare(0, 5, "PASS ")) {
 			if (buffer.front() == "PASS " + _password)
 				eventUser.setHavePass(true);
 			else
 				msg = "451 PRIVMSG :Wrong password, use /set irc.server.<server_name>.password <password>!\r\n";
 		}
-		else
-			msg = "451 PRIVMSG :Password required\r\n";
+		else {
+			msg = "451 PRIVMSG :Password required! Use /set irc.server.<server_name>.password <password>!\r\n";
+			while (buffer.size() > 1)
+				buffer.pop_back();
+		}
 	}
-	else if (!buffer.front().compare(0, 5, "NICK ")) {
-		tmp = buffer.front().substr(5);
-		eventUser.setNickname(tmp.substr(0, tmp.find_first_of(" \r\n")));
-	}
+	else if (cmd)
+		msg = cmd->execute(*this, eventUser, buffer.front());
 	else if (!buffer.front().compare(0, 5, "USER ")) {
-		tmp = buffer.front().substr(5);
-		eventUser.setUsername(tmp.substr(0, tmp.find_first_of(" \r\n")));
-		std::cout << eventUser.getUsername() << std::endl;
+		buffer.front() = buffer.front().substr(5);
+		eventUser.setUsername(buffer.front().substr(0, buffer.front().find_first_of(" \r\n")));
+		if (eventUser.getUsername().empty())
+			msg = "451 PRIVMSG :You are not registered. Give a username (/set irc.server.<server name>.username <username>).\r\n";
 	}
 	else if (!buffer.front().compare(0, 10, "CAP LS 302"))
 		;
-	else {
-		msg = "451 PRIVMSG :You are not registered.";
-		if (eventUser.getNickname().empty())
-			msg += "Give a nickname (/nick <nickname>).";
-		if (eventUser.getUsername().empty())
-			msg += "Give a username (/set irc.server.<server_name>.username <username>).";
-		msg += "\r\n";
-	}
+	else
+		msg = "451 PRIVMSG :You are not registered.\r\n";
 
 	if (!eventUser.getNickname().empty() && !eventUser.getUsername().empty() && eventUser.getHavePass() && !eventUser.getIsAuth()) {
 		eventUser.setIsAuth(true);
@@ -198,6 +194,26 @@ std::vector<std::string> parseBuffer(std::string buffer) {
 	return line;
 }
 
+std::string Server::sendPrivMsg(const std::string& msg, const std::string& nickname) {
+	for (int i = 1; i <= _userCount; i++) {
+		int fd = _poll[i].fd;
+		if (_listUser[fd]->getNickname() == nickname) {
+			send(fd, msg.c_str(), msg.size(), 0);
+			return ("");
+		}
+	}
+	return ("401 PRIVMSG " + nickname + " not found!\r\n");
+}
+
+bool Server::nicknameInUse(const std::string& nickname) {
+	for (int i = 1; i < _userCount; i++) {
+		int fd = _poll[i].fd;
+		if (_listUser[fd]->getNickname() == nickname)
+			return true;
+	}
+	return false;
+}
+
 void Server::handleMsg(const std::string& buffer, User& eventUser) {
 	std::string finalMsg;
 	std::vector<std::string> line;
@@ -206,22 +222,14 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 
 	line = parseBuffer(buffer);
 	while (!line.empty()) {
+		Command *cmd = NULL;
+		cmd = cmd->createCommand(line);
 		if (!eventUser.getIsAuth())
-			finalMsg = Auth(line , eventUser);
-		else if (!line.front().compare(0, 5,"PING "))
-			finalMsg = "PONG " + line.front().substr(5) + "\r\n";
-		else if (!line.front().compare(0, 5,"NICK ")) {
-			finalMsg = ":" + eventUser.getNickname() + " NICK :" + line.front().substr(5) + "\r\n";
-			eventUser.setNickname(line.front().substr(5));
-		}
-		else if (!line.front().compare(0, 5,"JOIN ")) {
-			std::cout << "JOIN command" << std::endl;
-			// finalMsg = ":" + eventUser.getNickname() + " JOIN allo\r\n";
-		}
-		if (!finalMsg.empty()) {
-			// std::cout << std::endl << "Server: " << finalMsg << std::endl;
+			finalMsg = Auth(cmd, line , eventUser);
+		else if (cmd)
+			finalMsg = cmd->execute(*this, eventUser, line.front());
+		if (!finalMsg.empty())
 			send(eventUser.getFd(), finalMsg.c_str(), finalMsg.size(), 0);
-		}
 		line.erase(line.begin());
 	}
 }
