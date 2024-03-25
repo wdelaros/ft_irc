@@ -76,3 +76,6 @@ fclean: clean
 re: fclean all
 	@echo "$(ERASE_LINE)$(GREEN)✔️ $(ITALIC)Remake complete$(RESET)\
 	$(GREEN) ✔️$(RESET)"
+
+ip:
+	@hostname -I || ipconfig getifaddr en0
