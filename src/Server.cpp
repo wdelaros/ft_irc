@@ -1,30 +1,4 @@
-#include "Server.hpp"
-#include "Command.hpp"
-#include "User.hpp"
-#include <cerrno>
-#include <cstddef>
-#include <cstdio>
-#include <cstring>
-#include <fcntl.h>
-#include <stdexcept>
-#include <cstdlib>
-#include <string>
-#include <vector>
-#include <sys/fcntl.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <iostream>
-#ifdef __linux
-# include <endian.h>
-# include <sys/socket.h>
-# include <asm-generic/errno.h>
-#else
-# include <sys/_endian.h>
-# include <sys/_types/_socklen_t.h>
-#endif
+#include "../include/Server.hpp"
 
 extern bool g_stop;
 
@@ -143,55 +117,25 @@ void Server::run() {
 	}
 }
 
-const std::string Server::Auth(Command *cmd, std::vector<std::string>& buffer, User &eventUser) {
+const std::string Server::Auth(Command *cmd, std::string& buffer, User &eventUser) {
 	std::string msg;
 
 	if (!eventUser.getHavePass()) {
-		if (!buffer.front().compare(0, 5, "PASS ")) {
-			if (buffer.front() == "PASS " + _password)
-				eventUser.setHavePass(true);
-			else
-				msg = "451 PRIVMSG :Wrong password, use /set irc.server.<server_name>.password <password>!\r\n";
-		}
-		else {
-			msg = "451 PRIVMSG :Password required! Use /set irc.server.<server_name>.password <password>!\r\n";
-			while (buffer.size() > 1)
-				buffer.pop_back();
-		}
+		if (!buffer.compare(0, 5, "PASS "))
+			cmd->execute(*this, eventUser, buffer);
+		else
+			msg = "451 PRIVMSG Password required! Use /set irc.server.<server_name>.password <password>!\r\n";
 	}
 	else if (cmd)
-		msg = cmd->execute(*this, eventUser, buffer.front());
-	else if (!buffer.front().compare(0, 5, "USER ")) {
-		buffer.front() = buffer.front().substr(5);
-		eventUser.setUsername(buffer.front().substr(0, buffer.front().find_first_of(" \r\n")));
-		if (eventUser.getUsername().empty())
-			msg = "451 PRIVMSG :You are not registered. Give a username (/set irc.server.<server name>.username <username>).\r\n";
-	}
-	else if (!buffer.front().compare(0, 10, "CAP LS 302"))
-		;
+		msg = cmd->execute(*this, eventUser, buffer);
 	else
-		msg = "451 PRIVMSG :You are not registered.\r\n";
+		msg = "451 PRIVMSG You are not registered.\r\n";
 
 	if (!eventUser.getNickname().empty() && !eventUser.getUsername().empty() && eventUser.getHavePass() && !eventUser.getIsAuth()) {
 		eventUser.setIsAuth(true);
-		msg = "001 " + eventUser.getNickname() + " :You are now register. Welcome on ft_irc " + eventUser.getUsername() + "!\r\n";
+		msg = "001 " + eventUser.getNickname() + " You are now register. Welcome on ft_irc " + eventUser.getUsername() + "!\r\n";
 	}
 	return msg;
-}
-
-std::vector<std::string> parseBuffer(std::string buffer) {
-	std::vector<std::string> line;
-	size_t startPos = 0;
-	size_t endPos = 0;
-
-	for (size_t i = 0; i < buffer.size();i++) {
-		if (buffer[i] == '\r' && buffer[i + 1] == '\n') {
-			endPos = i;
-			line.push_back(buffer.substr(startPos, endPos - startPos));
-			startPos = endPos + 2;
-		}
-	}
-	return line;
 }
 
 std::string Server::sendPrivMsg(const std::string& msg, const std::string& nickname) {
@@ -216,20 +160,25 @@ bool Server::nicknameInUse(const std::string& nickname) {
 
 void Server::handleMsg(const std::string& buffer, User& eventUser) {
 	std::string finalMsg;
-	std::vector<std::string> line;
+	std::vector<std::string> vecCmd;
 
-	std::cout << "Client " << eventUser.getNickname() << " " << eventUser.getFd() << " sends: " << buffer;
+	std::cout << eventUser.getNickname() << " "<< eventUser.getFd() << " :: " << buffer;
 
-	line = parseBuffer(buffer);
-	while (!line.empty()) {
-		Command *cmd = NULL;
-		cmd = cmd->createCommand(line);
-		if (!eventUser.getIsAuth())
-			finalMsg = Auth(cmd, line , eventUser);
-		else if (cmd)
-			finalMsg = cmd->execute(*this, eventUser, line.front());
+	_cmdList.parseBuffer(buffer);
+	vecCmd = _cmdList.getCmd();
+	for (std::vector<std::string>::iterator it = vecCmd.begin(); it != vecCmd.end(); it++) {
+		Command *cmd = _cmdList.createCommand();
+		if (cmd) {
+			if (!eventUser.getIsAuth())
+				finalMsg = Auth(cmd, *it, eventUser);
+			else
+				finalMsg = cmd->execute(*this, eventUser, *it);
+		}
+		else if (it->compare(0, 10, "CAP LS 302"))
+			finalMsg = "421 PRIVMSG " + *it + " Unknow command!\r\n";
+
 		if (!finalMsg.empty())
 			send(eventUser.getFd(), finalMsg.c_str(), finalMsg.size(), 0);
-		line.erase(line.begin());
+		_cmdList.pop();
 	}
 }

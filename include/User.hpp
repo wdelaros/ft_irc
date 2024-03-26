@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <unistd.h>
+
 class User {
 	private:
 		int _fd;

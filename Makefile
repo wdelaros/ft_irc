@@ -32,9 +32,12 @@ SRCS		=	main.cpp \
 				Server.cpp \
 				User.cpp \
 				Command.cpp \
+				CommandList.cpp \
 				Ping.cpp \
 				PrivMsg.cpp \
 				Nickname.cpp \
+				Username.cpp \
+				Pass.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))

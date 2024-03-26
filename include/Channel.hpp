@@ -1,5 +1,7 @@
 #pragma once
 
+class User;
+
 class Channel {
 
 };
@@ -8,3 +10,4 @@ class Channel {
 // regular channel userlist:	@nick
 // channel doesn't support mode	<+>
 // channel <+> don't have operator
+// chanenl #

@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Command.hpp"
+#include <string>
+#include <vector>
 
-class PrivMsg: public Command {
+class Username: public Command {
 	public:
-		PrivMsg();
-		~PrivMsg();
+		Username();
+		~Username();
 
 		virtual std::string execute(Server& server, User& eventUser, std::string& buffer) const;
 };
