@@ -12,7 +12,5 @@ class Command {
 		Command();
 		~Command();
 
-		// Command* createCommand(std::vector<std::string>& line);
-
 		virtual std::string execute(Server& server, User& eventUser, std::string& buffer) const = 0;
 };

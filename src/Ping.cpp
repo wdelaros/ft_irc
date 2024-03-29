@@ -9,6 +9,7 @@ Ping::~Ping() {
 
 }
 
+// client send(PING <ip address>) | server send(PONG <ip address>)
 std::string Ping::execute(Server& server, User& eventUser, std::string& buffer) const {
 	(void)server;
 	(void)eventUser;

@@ -138,26 +138,6 @@ const std::string Server::Auth(Command *cmd, std::string& buffer, User &eventUse
 	return msg;
 }
 
-std::string Server::sendPrivMsg(const std::string& msg, const std::string& nickname) {
-	for (int i = 1; i <= _userCount; i++) {
-		int fd = _poll[i].fd;
-		if (_listUser[fd]->getNickname() == nickname) {
-			send(fd, msg.c_str(), msg.size(), 0);
-			return ("");
-		}
-	}
-	return ("401 PRIVMSG " + nickname + " not found!\r\n");
-}
-
-bool Server::nicknameInUse(const std::string& nickname) {
-	for (int i = 1; i < _userCount; i++) {
-		int fd = _poll[i].fd;
-		if (_listUser[fd]->getNickname() == nickname)
-			return true;
-	}
-	return false;
-}
-
 void Server::handleMsg(const std::string& buffer, User& eventUser) {
 	std::string finalMsg;
 	std::vector<std::string> vecCmd;
@@ -181,4 +161,25 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 			send(eventUser.getFd(), finalMsg.c_str(), finalMsg.size(), 0);
 		_cmdList.pop();
 	}
+}
+
+int Server::findNickFd(const std::string& nickname) {
+	int fd;
+	if (!nicknameInUse(nickname))
+		return -1;
+	for (int i = 1; i <= _userCount; i++) {
+		fd = _poll[i].fd;
+		if (_listUser[fd]->getNickname() == nickname)
+			break ;
+	}
+	return fd;
+}
+
+bool Server::nicknameInUse(const std::string& nickname) {
+	for (int i = 1; i <= _userCount; i++) {
+		int fd = _poll[i].fd;
+		if (_listUser[fd]->getNickname() == nickname)
+			return true;
+	}
+	return false;
 }

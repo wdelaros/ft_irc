@@ -1,9 +1,10 @@
 #include "../include/CommandList.hpp"
-#include "../include/Nickname.hpp"
 #include "../include/Pass.hpp"
+#include "../include/Nickname.hpp"
+#include "../include/Username.hpp"
 #include "../include/Ping.hpp"
 #include "../include/PrivMsg.hpp"
-#include "../include/Username.hpp"
+#include "../include/Join.hpp"
 
 CommandList::CommandList() {
 	_cmdList["PASS"] = new Pass;
@@ -11,6 +12,7 @@ CommandList::CommandList() {
 	_cmdList["USER"] = new Username;
 	_cmdList["PING"] = new Ping;
 	_cmdList["PRIVMSG"] = new PrivMsg;
+	_cmdList["JOIN"] = new Join;
 }
 
 CommandList::~CommandList() {

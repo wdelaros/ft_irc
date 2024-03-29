@@ -5,12 +5,10 @@
 #include <string>
 #include <vector>
 
-class PrivMsg: public Command {
+class Join: public Command {
 	public:
-		PrivMsg();
-		~PrivMsg();
-
-		std::string sendPrivMsg(Server& server, const std::string& msg, const std::string& nickname) const;
+		Join();
+		~Join();
 
 		virtual std::string execute(Server& server, User& eventUser, std::string& buffer) const;
 };

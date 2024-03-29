@@ -38,6 +38,7 @@ SRCS		=	main.cpp \
 				Nickname.cpp \
 				Username.cpp \
 				Pass.cpp \
+				Join.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))
