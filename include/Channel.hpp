@@ -17,7 +17,7 @@ class Channel {
 
 	public:
 		Channel();
-		Channel(const std::string& channelName, User* user);
+		Channel(const std::string& channelName, const std::string& key, User* user);
 		~Channel();
 
 		const int& getUserCount() const;

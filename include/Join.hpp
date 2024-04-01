@@ -11,6 +11,7 @@ class Join: public Command {
 		~Join();
 
 		void CreateChannel(Server& server, User& eventUser, const std::string& channelName) const;
+		void CreateChannel(Server& server, User& eventUser, const std::string& channelName, const std::string& key) const;
 
 		virtual std::string execute(Server& server, User& eventUser, std::string& buffer) const;
 };

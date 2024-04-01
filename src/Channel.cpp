@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <utility>
 
-Channel::Channel(const std::string& channelName, User* user): _name(channelName) {
+Channel::Channel(const std::string& channelName, const std::string& key, User* user): _name(channelName), _key(key) {
 	_user[user] = true;
 }
 
@@ -51,7 +51,6 @@ void Channel::sendUserList(const User* user) {
 		list += it->first->getNickname() + " ";
 	}
 	finalMsg = "353 " + user->getNickname() + " = " + _name + " :" + list + "\r\n";
-	std::cout << finalMsg;
 	send(user->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
 	finalMsg = "366 " + user->getNickname() + " " + _name + " :End of /NAMES list" + "\r\n";
 	send(user->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
