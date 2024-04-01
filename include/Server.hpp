@@ -6,8 +6,10 @@
 #include <cstring>
 
 #include <fcntl.h>
+#include <map>
 #include <netdb.h>
 #include <poll.h>
+#include <string>
 
 #include "Command.hpp"
 #include "CommandList.hpp"
@@ -45,4 +47,13 @@ class Server {
 		bool nicknameInUse(const std::string& nickname);
 
 		int findNickFd(const std::string& nickname);
+
+		const std::map<int, User*>& getUserList() const;
+
+		/***********************CHANNEL***********************/
+
+		bool isChannelExist(const std::string& channelName);
+		void addChannel(const std::string& channelName, Channel* channel);
+		Channel* getChannel(const std::string& channel);
+
 };

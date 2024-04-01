@@ -5,6 +5,7 @@
 #include "../include/Ping.hpp"
 #include "../include/PrivMsg.hpp"
 #include "../include/Join.hpp"
+#include "../include/Mode.hpp"
 
 CommandList::CommandList() {
 	_cmdList["PASS"] = new Pass;
@@ -13,6 +14,7 @@ CommandList::CommandList() {
 	_cmdList["PING"] = new Ping;
 	_cmdList["PRIVMSG"] = new PrivMsg;
 	_cmdList["JOIN"] = new Join;
+	_cmdList["MODE"] = new Mode;
 }
 
 CommandList::~CommandList() {

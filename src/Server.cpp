@@ -155,7 +155,7 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 				finalMsg = cmd->execute(*this, eventUser, *it);
 		}
 		else if (it->compare(0, 10, "CAP LS 302"))
-			finalMsg = "421 PRIVMSG " + *it + " Unknow command!\r\n";
+			finalMsg = "421 '" + *it + "' :Unknow command!\r\n";
 
 		if (!finalMsg.empty())
 			send(eventUser.getFd(), finalMsg.c_str(), finalMsg.size(), 0);
@@ -182,4 +182,23 @@ bool Server::nicknameInUse(const std::string& nickname) {
 			return true;
 	}
 	return false;
+}
+
+const std::map<int, User*>& Server::getUserList() const {
+	return _listUser;
+}
+
+/***********************CHANNEL***********************/
+
+bool Server::isChannelExist(const std::string& channelName) {
+	std::map<std::string, Channel*>::iterator it = _listChannel.find(channelName);
+	return it != _listChannel.end();
+}
+
+void Server::addChannel(const std::string& channelName, Channel* channel) {
+	_listChannel[channelName] = channel;
+}
+
+Channel* Server::getChannel(const std::string& channel) {
+	return _listChannel[channel];
 }

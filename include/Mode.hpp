@@ -5,12 +5,10 @@
 #include <string>
 #include <vector>
 
-class Join: public Command {
+class Mode: public Command {
 	public:
-		Join();
-		~Join();
-
-		void CreateChannel(Server& server, User& eventUser, const std::string& channelName) const;
+		Mode();
+		~Mode();
 
 		virtual std::string execute(Server& server, User& eventUser, std::string& buffer) const;
 };

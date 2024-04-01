@@ -10,10 +10,18 @@ PrivMsg::~PrivMsg() {
 
 }
 
+std::string PrivMsg::sendChannelMsg(Server& server, User& user, const std::string& msg, const std::string& channelName) const {
+	if (server.isChannelExist(channelName)) {
+		Channel* channel = server.getChannel(channelName);
+		channel->sendMsg(user, msg);
+	}
+	return "";
+}
+
 std::string PrivMsg::sendPrivMsg(Server& server, const std::string& msg, const std::string& nickname) const {
 	int fd = server.findNickFd(nickname);
 	if (fd == -1)
-		return ("401 PRIVMSG " + nickname + " not found!\r\n");
+		return ("401 '" + nickname + "' :not found!\r\n");
 	send(fd, msg.c_str(), msg.size(), 0);
 	return "";
 }
@@ -25,8 +33,8 @@ std::string PrivMsg::execute(Server& server, User& eventUser, std::string& buffe
 	std::string target = buffer.substr(0, buffer.find_first_of(" "));
 	buffer = buffer.substr(buffer.find_first_of(" ") + 1);
 	msg = ":" + eventUser.getNickname() + " PRIVMSG " + target + " " + buffer + "\r\n";
-	if (target[0] == '#')
-		return sendPrivMsg(server, msg, "frog");
+	if (target[0] == '#' || target[0] == '&')
+		return sendChannelMsg(server, eventUser, msg, target);
 	else
 		return sendPrivMsg(server, msg, target);
 }

@@ -1,9 +1,12 @@
 #include "../include/Nickname.hpp"
 #include "../include/Server.hpp"
-#include <_ctype.h>
 #include <cctype>
 #include <cstddef>
+#include <map>
 #include <string>
+#ifdef __apple
+# include <_ctype.h>
+#endif
 
 Nickname::Nickname() {
 
@@ -30,15 +33,18 @@ std::string Nickname::execute(Server& server, User& eventUser, std::string& buff
 	std::string msg;
 	buffer = buffer.substr(buffer.find_first_of(" \r\n") + 1);
 	if (buffer.length() > 9)
-		msg = "432 PRIVMSG Nickname too long!\r\n";
+		msg = "432 '" + buffer + "' :Nickname too long!\r\n";
 	else if (!isValidStr(buffer, 0, "[]`{}|\\^_^"))
-		msg = "432 PRIVMSG Nickname invalid character!\r\n";
+		msg = "432 '" + buffer + "' :Nickname invalid character!\r\n";
 	else if (server.nicknameInUse(buffer))
-		msg = "433 PRIVMSG Nickname already in use!\r\n";
+		msg = "433 '" + buffer + "' :Nickname already in use!\r\n";
 	else if (!eventUser.getIsAuth())
 		eventUser.setNickname(buffer);
 	else {
 		msg = ":" + eventUser.getNickname() + " NICK :" + buffer + "\r\n";
+		for (std::map<int, User*>::const_iterator it = server.getUserList().begin(); it != server.getUserList().end(); it++)
+			send(it->second->getFd(), msg.c_str(), msg.size(), 0);
+		msg = "";
 		eventUser.setNickname(buffer);
 	}
 	if (eventUser.getNickname().empty())
