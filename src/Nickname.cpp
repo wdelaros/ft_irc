@@ -50,5 +50,4 @@ std::string Nickname::execute(Server& server, User& eventUser, std::string& buff
 	if (eventUser.getNickname().empty())
 		msg += "451 PRIVMSG You are not registered. Give a nickname (/set irc.server.<server name>.nicks <nickname>).\r\n";
 	return msg;
-	
 }

@@ -100,20 +100,7 @@ void Server::acceptConnection() {
 }
 
 void Server::disconnectUser(int i, int& fd) {
-	for (std::map<std::string, Channel*>::iterator it = _listChannel.begin(); it != _listChannel.end(); ) {
-		if (it->second->isUserInChannel(_listUser[fd]->getNickname())) {
-			it->second->disconnectUser(_listUser[fd], "has disconnected!");
-			std::cout << it->first << " " << it->second->getUserCount() << std::endl;
-			if (!it->second->getUserCount()) {
-				deleteChannel(it->second->getName());
-				it = _listChannel.begin();
-			}
-			else
-				it++;
-		}
-		else
-			it++;
-	}
+	disconnectUserChannel(*_listUser[fd]);
 	delete _listUser[fd];
 	_poll.erase(_poll.begin() + i);
 	_listUser.erase(fd);

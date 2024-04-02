@@ -61,20 +61,7 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 	std::map<std::string, std::string> channelKey;
 
 	if (vec[1] == "0") {
-		for (std::map<std::string, Channel*>::const_iterator it = server.getChannelList().begin(); it != server.getChannelList().end(); ) {
-			if (it->second->isUserInChannel(eventUser.getNickname())) {
-				it->second->disconnectUser(&eventUser, "has disconnected!");
-				std::cout << it->first << " " << it->second->getUserCount() << std::endl;
-				if (!it->second->getUserCount()) {
-					server.deleteChannel(it->second->getName());
-					it = server.getChannelList().begin();
-				}
-				else
-					it++;
-			}
-			else
-				it++;
-		}
+		server.disconnectUserChannel(eventUser);
 		return "";
 	}
 
@@ -87,7 +74,12 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 		if (std::regex_match(it->first, regex)) {
 			if (server.isChannelExist(it->first.substr(0, it->first.find_first_of(",\r\n")))) {
 				Channel *channel = server.getChannel(it->first.substr(0, it->first.find_first_of(",\r\n")));
-				if (channel->getKey() == it->second) {
+				if (channel->isUserInChannel(eventUser.getNickname())) {
+					msg = "443 " + eventUser.getNickname() + " " + it->first + " :You're already on that channel!\r\n";
+					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
+					msg = "";
+				}
+				else if (channel->getKey() == it->second) {
 					channel->addUser(&eventUser);
 					msg = ":" + eventUser.getNickname() + " JOIN " + it->first + "\r\n";
 					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
@@ -126,6 +118,4 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 
 // <letter>		::= [a-zA-Z]
 // <number>		::= [0-9]
-// <special>	::= '-' | '[' | ']' | '\' | '`' | '^' | '{' | '}'
-
-
+// <special>	::= '-' | '[' | ']' | '\' | '`' | '^' | '{' | '}' | '_' | '|'
