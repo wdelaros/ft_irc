@@ -12,6 +12,7 @@ class Channel {
 		int			_limitUser;
 		std::string	_name;
 		std::string	_key;
+		std::string _mode;
 
 		std::map<User*, bool> _user;
 
@@ -37,4 +38,5 @@ class Channel {
 		void disconnectUser(User* user, const std::string& msg);
 
 		bool isUserInChannel(const std::string& nickname);
+		void sendMode(User& user);
 };

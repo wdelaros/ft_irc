@@ -6,6 +6,7 @@
 
 Channel::Channel(const std::string& channelName, const std::string& key, User* user): _name(channelName), _key(key) {
 	_user[user] = true;
+	_mode = "";
 	_userCount = 1;
 }
 
@@ -77,6 +78,16 @@ void Channel::sendBroadcastUserList() {
 		// std::string tmpMsg = FinalMsg + "366 " + it->first->getNickname() + " " + _name + " :End of /NAMES list" + "\r\n";
 		send(it->first->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
 	}
+}
+
+void Channel::sendMode(User& user) {
+	std::string msg;
+
+	if (_mode.empty())
+		msg = "324 " + user.getNickname() + " " + _name + "\r\n";
+	else
+		msg = "324 " + user.getNickname() + " " + _name + " +" + _mode + "\r\n";
+	send(user.getFd(), msg.c_str(), msg.size(), 0);
 }
 
 void Channel::addUser(User* user) {

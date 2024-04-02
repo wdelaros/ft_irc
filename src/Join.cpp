@@ -75,7 +75,7 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 			if (server.isChannelExist(it->first.substr(0, it->first.find_first_of(",\r\n")))) {
 				Channel *channel = server.getChannel(it->first.substr(0, it->first.find_first_of(",\r\n")));
 				if (channel->isUserInChannel(eventUser.getNickname())) {
-					msg = "443 " + eventUser.getNickname() + " " + it->first + " :You're already on that channel!\r\n";
+					msg = "443 '" + it->first + "' :You're already on that channel!\r\n";
 					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
 					msg = "";
 				}

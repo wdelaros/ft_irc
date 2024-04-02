@@ -111,7 +111,7 @@ void Server::disconnectUserChannel(User& user) {
 	for (std::map<std::string, Channel*>::iterator it = _listChannel.begin(); it != _listChannel.end(); ) {
 		if (it->second->isUserInChannel(user.getNickname())) {
 			it->second->disconnectUser(&user, "has disconnected!");
-			std::cout << it->first << " " << it->second->getUserCount() << std::endl;
+			std::cout << "Channel: " << it->first << "	user connected: " << it->second->getUserCount() << std::endl;
 			if (!it->second->getUserCount()) {
 				deleteChannel(it->second->getName());
 				it = _listChannel.begin();
@@ -199,7 +199,7 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 				finalMsg = cmd->execute(*this, eventUser, *it);
 		}
 		else if (it->compare(0, 10, "CAP LS 302"))
-			finalMsg = "421 '" + *it + "' :Unknow command!\r\n";
+			finalMsg = "421 '" + it->substr(0, it->find(" ")) + "' :Unknow command!\r\n";
 
 		if (!finalMsg.empty())
 			send(eventUser.getFd(), finalMsg.c_str(), finalMsg.size(), 0);
