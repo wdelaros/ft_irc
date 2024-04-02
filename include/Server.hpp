@@ -36,6 +36,7 @@ class Server {
 		const int& getFd() const;
 		const std::string& getPassword() const;
 		const std::map<int, User*>& getUserList() const;
+		const std::map<std::string, Channel*>& getChannelList() const;
 
 		void run();
 
@@ -47,6 +48,7 @@ class Server {
 		void acceptConnection();
 		void userCreation(const int& fd);
 		void disconnectUser(int i, int& fd);
+		void disconnectUserChannel(User& user);
 
 		/***********************NICKNAME***********************/
 
@@ -58,6 +60,7 @@ class Server {
 		bool isChannelExist(const std::string& channelName);
 		void addChannel(const std::string& channelName, Channel* channel);
 		Channel* getChannel(const std::string& channel);
+		void deleteChannel(const std::string& channelName);
 };
 
 std::vector<std::string> tokenize(const std::string& buffer, const std::string& delimiter);

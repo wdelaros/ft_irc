@@ -49,16 +49,34 @@ std::map<std::string, std::string> parseChannelKey(std::vector<std::string> chan
 	std::map<std::string, std::string> channelKey;
 
 	for (size_t i = 0; i < channel.size(); i++)
-			channelKey.insert(std::pair<std::string, std::string>(channel[i], ""));
+		channelKey.insert(std::pair<std::string, std::string>(channel[i], ""));
 	return channelKey;
 }
 
 // client send(JOIN <target>[SPACE<target>]) | server send(:<nickname> JOIN <channel name>)
 std::string Join::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
-	std::regex regex("(#|&)[a-zA-z]+|0");
+	std::regex regex("(#|&)[a-zA-z]+");
 	std::vector<std::string> vec = tokenize(buffer, " ");
 	std::map<std::string, std::string> channelKey;
+
+	if (vec[1] == "0") {
+		for (std::map<std::string, Channel*>::const_iterator it = server.getChannelList().begin(); it != server.getChannelList().end(); ) {
+			if (it->second->isUserInChannel(eventUser.getNickname())) {
+				it->second->disconnectUser(&eventUser, "has disconnected!");
+				std::cout << it->first << " " << it->second->getUserCount() << std::endl;
+				if (!it->second->getUserCount()) {
+					server.deleteChannel(it->second->getName());
+					it = server.getChannelList().begin();
+				}
+				else
+					it++;
+			}
+			else
+				it++;
+		}
+		return "";
+	}
 
 	if (vec.size() > 2)
 		channelKey = parseChannelKey(tokenize(vec[1], ","), tokenize(vec[2], ","));

@@ -23,6 +23,7 @@ class Channel {
 		const int& getUserCount() const;
 		const int& getLimitUser() const;
 		const std::string& getKey() const;
+		const std::string& getName() const;
 
 		void setLimitUser();
 		void setKey(const std::string& key);

@@ -6,6 +6,7 @@
 
 Channel::Channel(const std::string& channelName, const std::string& key, User* user): _name(channelName), _key(key) {
 	_user[user] = true;
+	_userCount = 1;
 }
 
 Channel::~Channel() {
@@ -22,6 +23,10 @@ const int& Channel::getLimitUser() const {
 
 const std::string& Channel::getKey() const {
 	return _key;
+}
+
+const std::string& Channel::getName() const {
+	return _name;
 }
 
 void Channel::setLimitUser() {
@@ -91,9 +96,8 @@ void Channel::disconnectUser(User* user, const std::string& msg) {
 }
 
 bool Channel::isUserInChannel(const std::string& nickname) {
-	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++) {
+	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++)
 		if (it->first->getNickname() == nickname)
 			return true;
-	}
 	return false;
 }

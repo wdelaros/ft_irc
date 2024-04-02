@@ -72,6 +72,10 @@ const std::map<int, User*>& Server::getUserList() const {
 	return _listUser;
 }
 
+const std::map<std::string, Channel*>& Server::getChannelList() const {
+	return _listChannel;
+}
+
 /***********************CONNECTION***********************/
 
 void	Server::userCreation(const int& fd) {
@@ -96,10 +100,47 @@ void Server::acceptConnection() {
 }
 
 void Server::disconnectUser(int i, int& fd) {
+	for (std::map<std::string, Channel*>::iterator it = _listChannel.begin(); it != _listChannel.end(); ) {
+		if (it->second->isUserInChannel(_listUser[fd]->getNickname())) {
+			it->second->disconnectUser(_listUser[fd], "has disconnected!");
+			std::cout << it->first << " " << it->second->getUserCount() << std::endl;
+			if (!it->second->getUserCount()) {
+				deleteChannel(it->second->getName());
+				it = _listChannel.begin();
+			}
+			else
+				it++;
+		}
+		else
+			it++;
+	}
 	delete _listUser[fd];
 	_poll.erase(_poll.begin() + i);
 	_listUser.erase(fd);
 	_userCount--;
+}
+
+void Server::disconnectUserChannel(User& user) {
+	for (std::map<std::string, Channel*>::iterator it = _listChannel.begin(); it != _listChannel.end(); ) {
+		if (it->second->isUserInChannel(user.getNickname())) {
+			it->second->disconnectUser(&user, "has disconnected!");
+			std::cout << it->first << " " << it->second->getUserCount() << std::endl;
+			if (!it->second->getUserCount()) {
+				deleteChannel(it->second->getName());
+				it = _listChannel.begin();
+			}
+			else
+				it++;
+		}
+		else
+			it++;
+	}
+}
+
+void Server::deleteChannel(const std::string& channelName) {
+	Channel* channel = _listChannel[channelName];
+	_listChannel.erase(channelName);
+	delete channel;
 }
 
 /***********************SERVER***********************/
