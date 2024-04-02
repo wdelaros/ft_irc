@@ -44,13 +44,21 @@ Server::Server(char **argv): _userCount(0) {
 }
 
 Server::~Server() {
+	std::map<std::string, Channel *>::iterator itChannel = _listChannel.begin();
+	while (itChannel != _listChannel.end()) {
+		delete itChannel->second;
+		itChannel++;
+	}
 	std::map<int, User *>::iterator it = _listUser.begin();
 	while (it != _listUser.end()) {
 		delete it->second;
+		close(it->first);
 		it++;
 	}
 	close(_poll[0].fd);
 }
+
+/***********************GETTER***********************/
 
 const int& Server::getFd() const {
 	return _poll[0].fd;
@@ -59,6 +67,12 @@ const int& Server::getFd() const {
 const std::string& Server::getPassword() const {
 	return _password;
 }
+
+const std::map<int, User*>& Server::getUserList() const {
+	return _listUser;
+}
+
+/***********************CONNECTION***********************/
 
 void	Server::userCreation(const int& fd) {
 	struct pollfd	user;
@@ -87,6 +101,8 @@ void Server::disconnectUser(int i, int& fd) {
 	_listUser.erase(fd);
 	_userCount--;
 }
+
+/***********************SERVER***********************/
 
 void Server::run() {
 	int fd;
@@ -163,6 +179,27 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 	}
 }
 
+std::vector<std::string> tokenize(const std::string& buffer, const std::string& delimiter) {
+	std::vector<std::string> vector;
+	std::string token;
+	size_t startPos = 0;
+	size_t endPos = buffer.find(delimiter);
+
+	while (endPos != std::string::npos) {
+		token = buffer.substr(startPos, endPos - startPos);
+		if (token.find(delimiter) == std::string::npos)
+			vector.push_back(token);
+		startPos = endPos + 1;
+		endPos = buffer.find(delimiter, startPos);
+	}
+	token = buffer.substr(startPos);
+	if (token.find(delimiter) == std::string::npos)
+		vector.push_back(token);
+	return vector;
+}
+
+/***********************NICKNAME***********************/
+
 int Server::findNickFd(const std::string& nickname) {
 	int fd;
 	if (!nicknameInUse(nickname))
@@ -182,10 +219,6 @@ bool Server::nicknameInUse(const std::string& nickname) {
 			return true;
 	}
 	return false;
-}
-
-const std::map<int, User*>& Server::getUserList() const {
-	return _listUser;
 }
 
 /***********************CHANNEL***********************/

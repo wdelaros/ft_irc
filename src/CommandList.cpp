@@ -6,6 +6,7 @@
 #include "../include/PrivMsg.hpp"
 #include "../include/Join.hpp"
 #include "../include/Mode.hpp"
+#include "../include/Part.hpp"
 
 CommandList::CommandList() {
 	_cmdList["PASS"] = new Pass;
@@ -15,6 +16,7 @@ CommandList::CommandList() {
 	_cmdList["PRIVMSG"] = new PrivMsg;
 	_cmdList["JOIN"] = new Join;
 	_cmdList["MODE"] = new Mode;
+	_cmdList["PART"] = new Part;
 }
 
 CommandList::~CommandList() {

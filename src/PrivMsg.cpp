@@ -1,6 +1,8 @@
 #include "../include/PrivMsg.hpp"
 #include "../include/Server.hpp"
+#include <string>
 #include <sys/socket.h>
+#include <vector>
 
 PrivMsg::PrivMsg() {
 
@@ -13,7 +15,10 @@ PrivMsg::~PrivMsg() {
 std::string PrivMsg::sendChannelMsg(Server& server, User& user, const std::string& msg, const std::string& channelName) const {
 	if (server.isChannelExist(channelName)) {
 		Channel* channel = server.getChannel(channelName);
-		channel->sendMsg(user, msg);
+		if (channel->isUserInChannel(user.getNickname()))
+			channel->sendMsg(user, msg);
+		else
+			return "441 " + user.getNickname() + " " + channelName + " :You're not in this channel!" + "\r\n";
 	}
 	return "";
 }
@@ -29,10 +34,9 @@ std::string PrivMsg::sendPrivMsg(Server& server, const std::string& msg, const s
 // client send(PRIVMSG <target> :<msg>) | server send(:<host> PRIVMSG <target> :<msg>)
 std::string PrivMsg::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
-	buffer = buffer.substr(buffer.find_first_of(" \r\n") + 1);
-	std::string target = buffer.substr(0, buffer.find_first_of(" "));
-	buffer = buffer.substr(buffer.find_first_of(" ") + 1);
-	msg = ":" + eventUser.getNickname() + " PRIVMSG " + target + " " + buffer + "\r\n";
+	std::vector<std::string> vec = tokenize(buffer, " ");
+	std::string target = vec[1];
+	msg = ":" + eventUser.getNickname() + " PRIVMSG " + target + " " + buffer.substr(buffer.find_first_of(":")) + "\r\n";
 	if (target[0] == '#' || target[0] == '&')
 		return sendChannelMsg(server, eventUser, msg, target);
 	else

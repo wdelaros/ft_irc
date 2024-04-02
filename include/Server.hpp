@@ -35,25 +35,29 @@ class Server {
 
 		const int& getFd() const;
 		const std::string& getPassword() const;
+		const std::map<int, User*>& getUserList() const;
 
 		void run();
 
 		const std::string Auth(Command *cmd, std::string& buffer, User &eventUser);
 		void handleMsg(const std::string& msg, User& eventUser);
 
+		/***********************CONNECTION***********************/
+
 		void acceptConnection();
 		void userCreation(const int& fd);
 		void disconnectUser(int i, int& fd);
-		bool nicknameInUse(const std::string& nickname);
+
+		/***********************NICKNAME***********************/
 
 		int findNickFd(const std::string& nickname);
-
-		const std::map<int, User*>& getUserList() const;
+		bool nicknameInUse(const std::string& nickname);
 
 		/***********************CHANNEL***********************/
 
 		bool isChannelExist(const std::string& channelName);
 		void addChannel(const std::string& channelName, Channel* channel);
 		Channel* getChannel(const std::string& channel);
-
 };
+
+std::vector<std::string> tokenize(const std::string& buffer, const std::string& delimiter);

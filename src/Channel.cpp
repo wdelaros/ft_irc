@@ -76,4 +76,24 @@ void Channel::sendBroadcastUserList() {
 
 void Channel::addUser(User* user) {
 	_user[user] = false;
+	_userCount++;
+}
+
+void Channel::sendBroadcastAll(const std::string& msg) {
+	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++)
+		send(it->first->getFd(), msg.c_str(), msg.size(), 0);
+}
+
+void Channel::disconnectUser(User* user, const std::string& msg) {
+	sendBroadcastAll(":" + user->getNickname() + " PART " + _name + " :" + msg + "\r\n");
+	_user.erase(user);
+	_userCount--;
+}
+
+bool Channel::isUserInChannel(const std::string& nickname) {
+	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++) {
+		if (it->first->getNickname() == nickname)
+			return true;
+	}
+	return false;
 }

@@ -41,6 +41,7 @@ SRCS		=	main.cpp \
 				Join.cpp \
 				Channel.cpp \
 				Mode.cpp \
+				Part.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))

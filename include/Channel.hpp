@@ -31,4 +31,9 @@ class Channel {
 		void sendUserList(const User* user);
 		void sendBroadcastUserList();
 		void addUser(User* user);
+
+		void sendBroadcastAll(const std::string& msg);
+		void disconnectUser(User* user, const std::string& msg);
+
+		bool isUserInChannel(const std::string& nickname);
 };
