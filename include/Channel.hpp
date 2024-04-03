@@ -13,6 +13,7 @@ class Channel {
 		std::string	_name;
 		std::string	_key;
 		std::string _mode;
+		// 
 
 		std::map<User*, bool> _user;
 
@@ -25,6 +26,7 @@ class Channel {
 		const int& getLimitUser() const;
 		const std::string& getKey() const;
 		const std::string& getName() const;
+		std::map<User*, bool>& getUserList();
 
 		void setLimitUser();
 		void setKey(const std::string& key);

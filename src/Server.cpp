@@ -1,4 +1,5 @@
 #include "../include/Server.hpp"
+#include <unistd.h>
 
 extern bool g_stop;
 

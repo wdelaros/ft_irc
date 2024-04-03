@@ -30,6 +30,10 @@ const std::string& Channel::getName() const {
 	return _name;
 }
 
+std::map<User*, bool>& Channel::getUserList() {
+	return _user;
+}
+
 void Channel::setLimitUser() {
 
 }

@@ -1,23 +1,32 @@
 #include "../include/CommandList.hpp"
-#include "../include/Pass.hpp"
-#include "../include/Nickname.hpp"
 #include "../include/Username.hpp"
-#include "../include/Ping.hpp"
+#include "../include/Nickname.hpp"
 #include "../include/PrivMsg.hpp"
-#include "../include/Join.hpp"
-#include "../include/Mode.hpp"
+// #include "../include/Invite.hpp"
+// #include "../include/Topic.hpp"
+// #include "../include/Oper.hpp"
+// #include "../include/Kick.hpp"
 #include "../include/Part.hpp"
+#include "../include/Mode.hpp"
+#include "../include/Join.hpp"
+#include "../include/Ping.hpp"
+#include "../include/Pass.hpp"
 
 CommandList::CommandList() {
 	_cmdList["PASS"] = new Pass;
-	_cmdList["NICK"] = new Nickname;
-	_cmdList["USER"] = new Username;
 	_cmdList["PING"] = new Ping;
-	_cmdList["PRIVMSG"] = new PrivMsg;
 	_cmdList["JOIN"] = new Join;
 	_cmdList["MODE"] = new Mode;
 	_cmdList["PART"] = new Part;
+	// _cmdList["KICK"] = new Kick;
+	// _cmdList["OPER"] = new Oper;
+	// _cmdList["TOPIC"] = new Topic;
+	// _cmdList["INVITE"] = new Invite;
+	_cmdList["NICK"] = new Nickname;
+	_cmdList["USER"] = new Username;
+	_cmdList["PRIVMSG"] = new PrivMsg;
 }
+// _cmdList["LIST"] = new List;
 
 CommandList::~CommandList() {
 
