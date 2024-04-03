@@ -53,6 +53,8 @@ bool joinChannel(Channel* channel, User& eventUser, std::map<std::string, std::s
 		channel->sendBroadcastAll(msg);
 		// send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
 		channel->sendBroadcastUserList();
+		msg = "366 " + eventUser.getNickname() + " " + channel->getName() + " :End of /NAMES list" + "\r\n";
+		send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
 		return true;
 	}
 	return false;
