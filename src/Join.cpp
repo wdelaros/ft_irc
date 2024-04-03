@@ -5,6 +5,7 @@
 #include <regex>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 Join::Join() {
@@ -17,16 +18,7 @@ Join::~Join() {
 
 void Join::CreateChannel(Server& server, User& eventUser, const std::string& channelName) const {
 	std::string msg;
-	Channel* channel = new Channel(channelName, "", &eventUser);
-	server.addChannel(channelName, channel);
-	msg = ":" + eventUser.getNickname() + " JOIN " + channelName + "\r\n";
-	send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
-	channel->sendUserList(&eventUser);
-}
-
-void Join::CreateChannel(Server& server, User& eventUser, const std::string& channelName, const std::string& key) const {
-	std::string msg;
-	Channel* channel = new Channel(channelName, key, &eventUser);
+	Channel* channel = new Channel(channelName,  &eventUser);
 	server.addChannel(channelName, channel);
 	msg = ":" + eventUser.getNickname() + " JOIN " + channelName + "\r\n";
 	send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
@@ -51,6 +43,19 @@ std::map<std::string, std::string> parseChannelKey(std::vector<std::string> chan
 	for (size_t i = 0; i < channel.size(); i++)
 		channelKey.insert(std::pair<std::string, std::string>(channel[i], ""));
 	return channelKey;
+}
+
+bool joinChannel(Channel* channel, User& eventUser, std::map<std::string, std::string>::iterator it) {
+	std::string msg;
+	if (channel->getLimitUser() < channel->getUserCount() || channel->getLimitUser() == -1) {
+		channel->addUser(&eventUser);
+		msg = ":" + eventUser.getNickname() + " JOIN " + it->first + "\r\n";
+		channel->sendBroadcastAll(msg);
+		// send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
+		channel->sendBroadcastUserList();
+		return true;
+	}
+	return false;
 }
 
 // client send(JOIN <target>[SPACE<target>]) | server send(:<nickname> JOIN <channel name>)
@@ -79,18 +84,35 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
 					msg = "";
 				}
-				else if (channel->getKey() == it->second) {
-					channel->addUser(&eventUser);
-					msg = ":" + eventUser.getNickname() + " JOIN " + it->first + "\r\n";
-					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
-					channel->sendBroadcastUserList();
-					msg = "";
+				else if (eventUser.getIsOp()) {
+					if (!joinChannel(channel, eventUser, it))
+						msg = "471 '" + it->first + "':Cannot join channel (+l) limit: " + reinterpret_cast<const std::string&>(channel->getLimitUser()) + "\r\n";
 				}
-				else
-					msg = "475 '" + it->first + "' :Wrong password!\r\n";;
+				else if (channel->getMode().find("i") != std::string::npos) {
+					if (channel->getKey() == it->second || channel->isUserInInviteList(&eventUser)) {
+						if (!joinChannel(channel, eventUser, it))
+							msg = "471 '" + it->first + "':Cannot join channel (+l)\r\n";
+					}
+					else
+						msg = "473 '" + it->first + "' :Cannot join channel (+i)\r\n";
+				}
+				else if (channel->getKey() == it->second) {
+					if (!joinChannel(channel, eventUser, it))
+						msg = "471 '" + it->first + "':Cannot join channel (+l)\r\n";
+				}
+				else {
+					if (channel->getMode().find("k") == std::string::npos)
+						msg = "475 '" + it->first + "' :Wrong password!\r\n";
+					else
+						msg = "475 '" + it->first + "' :Cannot join channel (+k)\r\n";
+				}
 			}
-			else
-				CreateChannel(server, eventUser, it->first, it->second);
+			else {
+				if (it->second.empty())
+					CreateChannel(server, eventUser, it->first);
+				else
+					msg = "403 '" + it->first + "' :No such channel\r\n";
+			}
 		}
 		else
 			msg = "403 '" + it->first + "' :No such channel\r\n";

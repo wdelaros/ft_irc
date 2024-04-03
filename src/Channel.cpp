@@ -3,11 +3,14 @@
 #include <map>
 #include <sys/socket.h>
 #include <utility>
+#include <vector>
 
-Channel::Channel(const std::string& channelName, const std::string& key, User* user): _name(channelName), _key(key) {
+Channel::Channel(const std::string& channelName, User* user): _name(channelName) {
 	_user[user] = true;
 	_mode = "";
+	_key = "";
 	_userCount = 1;
+	_limitUser = -1;
 }
 
 Channel::~Channel() {
@@ -30,16 +33,28 @@ const std::string& Channel::getName() const {
 	return _name;
 }
 
+const std::string& Channel::getMode() const {
+	return _mode;
+}
+
 std::map<User*, bool>& Channel::getUserList() {
 	return _user;
 }
 
-void Channel::setLimitUser() {
+std::vector<User*>& Channel::getInviteList() {
+	return _invite;
+}
 
+void Channel::setLimitUser(const int& limit) {
+	_limitUser = limit;
 }
 
 void Channel::setKey(const std::string& key) {
 	_key = key;
+}
+
+void Channel::setMode(const std::string& mode) {
+	_mode = mode;
 }
 
 void Channel::sendMsg(const User& user, const std::string& msg) {
@@ -113,6 +128,13 @@ void Channel::disconnectUser(User* user, const std::string& msg) {
 bool Channel::isUserInChannel(const std::string& nickname) {
 	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++)
 		if (it->first->getNickname() == nickname)
+			return true;
+	return false;
+}
+
+bool Channel::isUserInInviteList(User* user) {
+	for (std::vector<User*>::iterator it = _invite.begin(); it != _invite.end(); it++)
+		if ((*it)->getNickname() == user->getNickname())
 			return true;
 	return false;
 }
