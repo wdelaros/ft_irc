@@ -14,7 +14,6 @@ class Channel {
 		std::string	_name;
 		std::string	_key;
 		std::string _mode;
-		// 
 
 		std::vector<User*> _invite;
 		std::map<User*, bool> _user;
