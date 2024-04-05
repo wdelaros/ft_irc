@@ -1,4 +1,5 @@
 #include "../include/Channel.hpp"
+#include "../include/Define.hpp"
 #include <iostream>
 #include <map>
 #include <sys/socket.h>
@@ -75,9 +76,20 @@ void Channel::sendUserList(const User* user) {
 			list += "@";
 		list += it->first->getNickname() + " ";
 	}
-	finalMsg = "353 " + user->getNickname() + " = " + _name + " :" + list + "\r\n";
+	finalMsg = RPL_NAMREPLY(user->getNickname(), _name, list);
+	std::cout << finalMsg;
 	send(user->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
-	finalMsg = "366 " + user->getNickname() + " " + _name + " :End of /NAMES list" + "\r\n";
+	finalMsg = RPL_ENDOFNAMES(user->getNickname(), _name);
+	send(user->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
+}
+
+void Channel::sendTopic(const User* user) {
+	std::string finalMsg;
+
+	if (_topic.empty())
+		finalMsg = RPL_NOTOPIC(_name);
+	else
+		finalMsg = RPL_TOPIC(_name, _topic);
 	send(user->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
 }
 
@@ -92,7 +104,8 @@ void Channel::sendBroadcastUserList() {
 			list += "@";
 		list += it->first->getNickname() + " ";
 	}
-	finalMsg = "353 = " + _name + " :" + list + "\r\n";
+	finalMsg = RPL_NAMREPLY(_name, list);
+	std::cout << finalMsg;
 	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++) {
 		// std::string tmpMsg = FinalMsg + "366 " + it->first->getNickname() + " " + _name + " :End of /NAMES list" + "\r\n";
 		send(it->first->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
@@ -103,9 +116,9 @@ void Channel::sendMode(User& user) {
 	std::string msg;
 
 	if (_mode.empty())
-		msg = "324 " + user.getNickname() + " " + _name + "\r\n";
+		msg = RPL_CHANNELMODEIS(user.getNickname(), _name);
 	else
-		msg = "324 " + user.getNickname() + " " + _name + " +" + _mode + "\r\n";
+		msg = RPL_CHANNELMODEIS(user.getNickname(), _name, _mode);
 	send(user.getFd(), msg.c_str(), msg.size(), 0);
 }
 

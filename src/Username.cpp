@@ -15,6 +15,6 @@ std::string Username::execute(Server& server, User& eventUser, std::string& buff
 	buffer = buffer.substr(buffer.find_first_of(" \r\n") + 1);
 	eventUser.setUsername(buffer.substr(0, buffer.find_first_of(" \r\n")));
 	if (eventUser.getUsername().empty())
-		msg = "451 PRIVMSG You are not registered. Give a username (/set irc.server.<server name>.username <username>).\r\n";
+		msg = ERR_NOTREGISTERED((std::string)"You are not registered. Give a username (/set irc.server.<server name>.username <username>).");
 	return msg;
 }

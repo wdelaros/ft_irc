@@ -14,6 +14,6 @@ std::string Pass::execute(Server& server, User& eventUser, std::string& buffer) 
 	if (buffer == "PASS " + server.getPassword())
 		eventUser.setHavePass(true);
 	else
-		msg = "451 PRIVMSG Wrong password, use /set irc.server.<server_name>.password <password>!\r\n";
+		msg = ERR_NOTREGISTERED((std::string)"Wrong password, use /set irc.server.<server_name>.password <password>!");
 	return msg;
 }

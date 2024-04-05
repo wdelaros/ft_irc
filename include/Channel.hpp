@@ -13,6 +13,7 @@ class Channel {
 		int			_limitUser;
 		std::string	_name;
 		std::string	_key;
+		std::string	_topic;
 		std::string _mode;
 
 		std::vector<User*> _invite;
@@ -37,6 +38,7 @@ class Channel {
 
 		void sendMsg(const User& user, const std::string& msg);
 		void sendUserList(const User* user);
+		void sendTopic(const User* user);
 		void sendBroadcastUserList();
 		void addUser(User* user);
 

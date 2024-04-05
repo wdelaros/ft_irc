@@ -3,7 +3,7 @@
 #include "../include/Nickname.hpp"
 #include "../include/PrivMsg.hpp"
 // #include "../include/Invite.hpp"
-// #include "../include/Topic.hpp"
+#include "../include/Topic.hpp"
 // #include "../include/Oper.hpp"
 // #include "../include/Kick.hpp"
 #include "../include/Part.hpp"
@@ -20,7 +20,7 @@ CommandList::CommandList() {
 	_cmdList["PART"] = new Part;
 	// _cmdList["KICK"] = new Kick;
 	// _cmdList["OPER"] = new Oper;
-	// _cmdList["TOPIC"] = new Topic;
+	_cmdList["TOPIC"] = new Topic;
 	// _cmdList["INVITE"] = new Invite;
 	_cmdList["NICK"] = new Nickname;
 	_cmdList["USER"] = new Username;

@@ -169,16 +169,16 @@ const std::string Server::Auth(Command *cmd, std::string& buffer, User &eventUse
 		if (!buffer.compare(0, 5, "PASS "))
 			cmd->execute(*this, eventUser, buffer);
 		else
-			msg = "451 PRIVMSG Password required! Use /set irc.server.<server_name>.password <password>!\r\n";
+			msg = ERR_NOTREGISTERED((std::string)"Password required! Use /set irc.server.<server_name>.password <password>!");
 	}
 	else if (cmd)
 		msg = cmd->execute(*this, eventUser, buffer);
 	else
-		msg = "451 PRIVMSG You are not registered.\r\n";
+		msg = ERR_NOTREGISTERED((std::string)"You are not registered.");
 
 	if (!eventUser.getNickname().empty() && !eventUser.getUsername().empty() && eventUser.getHavePass() && !eventUser.getIsAuth()) {
 		eventUser.setIsAuth(true);
-		msg = "001 " + eventUser.getNickname() + " You are now register. Welcome on ft_irc " + eventUser.getUsername() + "!\r\n";
+		msg = RPL_WELCOME(eventUser.getNickname(), eventUser.getUsername());
 	}
 	return msg;
 }
@@ -200,7 +200,7 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 				finalMsg = cmd->execute(*this, eventUser, *it);
 		}
 		else if (it->compare(0, 10, "CAP LS 302"))
-			finalMsg = "421 '" + it->substr(0, it->find(" ")) + "' :Unknow command!\r\n";
+			finalMsg = ERR_UNKNOWNCOMMAND(it->substr(0, it->find(" ")));
 
 		if (!finalMsg.empty())
 			send(eventUser.getFd(), finalMsg.c_str(), finalMsg.size(), 0);

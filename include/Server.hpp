@@ -11,6 +11,8 @@
 #include <poll.h>
 #include <string>
 
+#include "Define.hpp"
+
 #include "Command.hpp"
 #include "CommandList.hpp"
 #include "Channel.hpp"

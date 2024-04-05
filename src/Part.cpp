@@ -22,6 +22,6 @@ std::string Part::execute(Server& server, User& eventUser, std::string& buffer) 
 			server.deleteChannel(channel->getName());
 	}
 	else
-		msg =  "441 " + eventUser.getNickname() + " '" + vec[1] + "' :You're not in this channel!" + "\r\n";
+		msg = ERR_USERNOTINCHANNEL(eventUser.getNickname(), vec[1]);
 	return msg;
 }

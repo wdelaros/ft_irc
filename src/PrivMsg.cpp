@@ -18,7 +18,7 @@ std::string PrivMsg::sendChannelMsg(Server& server, User& user, const std::strin
 		if (channel->isUserInChannel(user.getNickname()))
 			channel->sendMsg(user, msg);
 		else
-			return "441 " + user.getNickname() + " " + channelName + " :You're not in this channel!" + "\r\n";
+			return ERR_USERNOTINCHANNEL(user.getNickname(), channelName);
 	}
 	return "";
 }
@@ -26,7 +26,7 @@ std::string PrivMsg::sendChannelMsg(Server& server, User& user, const std::strin
 std::string PrivMsg::sendPrivMsg(Server& server, const std::string& msg, const std::string& nickname) const {
 	int fd = server.findNickFd(nickname);
 	if (fd == -1)
-		return ("401 '" + nickname + "' :not found!\r\n");
+		return ERR_NOSUCHNICK(nickname);
 	send(fd, msg.c_str(), msg.size(), 0);
 	return "";
 }

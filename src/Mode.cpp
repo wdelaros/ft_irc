@@ -28,7 +28,7 @@ std::string parseMode(Channel* channel, const std::string& mode) {
 
 	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
 		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
-			msg = "467 " + channel->getName() + " :Channel key already set\r\n";
+			msg = ERR_KEYSET(channel->getName());
 	}
 	return msg;
 }
@@ -47,19 +47,19 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 					if (checkMode(vec[2], "itkol"))
 						msg = parseMode(channel, vec[2]);
 					else
-						msg = "472 " + vec[2] + " :is unknown mode char to me for " + vec[1] + "\r\n";
+						msg = ERR_UNKNOWNMODE(vec[2], vec[1]);
 				}
 				else
-					msg = "482 '" + buffer.substr(0, buffer.find_first_of(" \r\n")) + "' :You're not channel operator!\r\n";
+					msg = ERR_CHANOPRIVSNEEDED(buffer.substr(0, buffer.find_first_of(" \r\n")));
 			}
 			else
 				channel->sendMode(eventUser);
 		}
 		else
-			msg = "441 " + eventUser.getNickname() + " " + channel->getName() + " :You're not in this channel!\r\n";
+			msg = ERR_USERNOTINCHANNEL(eventUser.getNickname(), channel->getName());
 	}
 	else
-		msg = "403 '" + buffer.substr(0, buffer.find_first_of(" \r\n")) + "' :No such channel!\r\n";
+		msg = ERR_NOSUCHCHANNEL(buffer.substr(0, buffer.find_first_of(" \r\n")));
 	return msg;
 }
 

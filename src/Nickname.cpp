@@ -33,11 +33,11 @@ std::string Nickname::execute(Server& server, User& eventUser, std::string& buff
 	std::string msg;
 	buffer = buffer.substr(buffer.find_first_of(" \r\n") + 1);
 	if (buffer.length() > 9)
-		msg = "432 '" + buffer + "' :Nickname too long!\r\n";
+		msg = ERR_ERRONEUSNICKNAME(buffer, "Nickname too long!");
 	else if (!isValidStr(buffer, 0, "[]`{}|\\^_^"))
-		msg = "432 '" + buffer + "' :Nickname invalid character!\r\n";
+		msg = ERR_ERRONEUSNICKNAME(buffer, "Nickname invalid character!");
 	else if (server.nicknameInUse(buffer))
-		msg = "433 '" + buffer + "' :Nickname already in use!\r\n";
+		msg = ERR_NICKNAMEINUSE(buffer);
 	else if (!eventUser.getIsAuth())
 		eventUser.setNickname(buffer);
 	else {
@@ -48,6 +48,6 @@ std::string Nickname::execute(Server& server, User& eventUser, std::string& buff
 		eventUser.setNickname(buffer);
 	}
 	if (eventUser.getNickname().empty())
-		msg += "451 PRIVMSG You are not registered. Give a nickname (/set irc.server.<server name>.nicks <nickname>).\r\n";
+		msg += ERR_NOTREGISTERED((std::string)"You are not registered. Give a nickname (/set irc.server.<server name>.nicks <nickname>).");
 	return msg;
 }
