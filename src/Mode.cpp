@@ -33,7 +33,7 @@ std::string parseMode(Channel* channel, const std::string& mode) {
 	return msg;
 }
 
-// client send(MODE <channel> (+,-)<mode param> <nickname>) | server send(:<nickname> MODE <channel> (+,-)<mode param>)
+// client send(MODE <channel> (+,-)<mode> <mode params>) | server send(:<nickname> MODE <channel> (+,-)<mode> <mode params>)
 std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");
@@ -63,11 +63,11 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 	return msg;
 }
 
-// i	invitation
-// t	restiction topic op
-// k	password(key)
-// o	privilege op
-// l	limit user
+// i	invitation				MODE (+,-)i
+// t	restiction topic op		MODE (+,-)t
+// k	password(key)			MODE (+,-)k <key>
+// o	privilege op			MODE (+,-)o <nickname>
+// l	limit user				MODE (+l <limit>,-l)
 
 
 // oper <nickname> <password>

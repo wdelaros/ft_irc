@@ -26,14 +26,17 @@ class Channel {
 
 		const int& getUserCount() const;
 		const int& getLimitUser() const;
+		const bool& getIsOp(User& user);
 		const std::string& getKey() const;
 		const std::string& getName() const;
+		const std::string& getTopic() const;
 		const std::string& getMode() const;
 		std::map<User*, bool>& getUserList();
 		std::vector<User*>& getInviteList();
 
 		void setLimitUser(const int& limit);
 		void setKey(const std::string& key);
+		void setTopic(const std::string& topic);
 		void setMode(const std::string& mode);
 
 		void sendMsg(const User& user, const std::string& msg);

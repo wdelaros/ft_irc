@@ -83,7 +83,7 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 			if (server.isChannelExist(it->first.substr(0, it->first.find_first_of(",\r\n")))) {
 				Channel *channel = server.getChannel(it->first.substr(0, it->first.find_first_of(",\r\n")));
 				if (channel->isUserInChannel(eventUser.getNickname())) {
-					msg = "443 '" + it->first + "' :You're already on that channel!\r\n";
+					msg = ERR_USERONCHANNEL(eventUser.getNickname(), it->first);
 					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
 					msg = "";
 				}
@@ -105,9 +105,9 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 				}
 				else {
 					if (channel->getMode().find("k") == std::string::npos)
-						msg = "475 '" + it->first + "' :Wrong password!\r\n";
+						msg = ERR_BADCHANNELKEY(it->first, ":Wrong password!");
 					else
-						msg = ERR_BADCHANNELKEY(it->first);
+						msg = ERR_BADCHANNELKEY(it->first, "Cannot join channel (+k)");
 				}
 			}
 			else {

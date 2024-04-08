@@ -8,7 +8,7 @@
 
 Channel::Channel(const std::string& channelName, User* user): _name(channelName) {
 	_user[user] = true;
-	_mode = "";
+	_mode = "t";
 	_key = "";
 	_userCount = 1;
 	_limitUser = -1;
@@ -26,12 +26,20 @@ const int& Channel::getLimitUser() const {
 	return _limitUser;
 }
 
+const bool& Channel::getIsOp(User& user) {
+	return _user[&user];
+}
+
 const std::string& Channel::getKey() const {
 	return _key;
 }
 
 const std::string& Channel::getName() const {
 	return _name;
+}
+
+const std::string& Channel::getTopic() const {
+	return _topic;
 }
 
 const std::string& Channel::getMode() const {
@@ -52,6 +60,10 @@ void Channel::setLimitUser(const int& limit) {
 
 void Channel::setKey(const std::string& key) {
 	_key = key;
+}
+
+void Channel::setTopic(const std::string& topic) {
+	_topic = topic; // not finish
 }
 
 void Channel::setMode(const std::string& mode) {
@@ -87,9 +99,9 @@ void Channel::sendTopic(const User* user) {
 	std::string finalMsg;
 
 	if (_topic.empty())
-		finalMsg = RPL_NOTOPIC(_name);
+		finalMsg = RPL_NOTOPIC(user->getNickname(), _name);
 	else
-		finalMsg = RPL_TOPIC(_name, _topic);
+		finalMsg = RPL_TOPIC(user->getNickname(), _name, _topic);
 	send(user->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
 }
 
