@@ -10,7 +10,7 @@ Part::~Part() {
 
 }
 
-// client send(MODE <channel> (+,-)<mode param> <nickname>) | server send(:<nickname> MODE <channel> (+,-)<mode param>)
+// client send(PART <channel> (+,-)<mode param> <nickname>) | server send(:<nickname> PART <channel> (+,-)<mode param>)
 std::string Part::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");

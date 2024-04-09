@@ -9,7 +9,7 @@ Topic::~Topic() {
 
 }
 
-// client send(TOPIC <channel> <topic>) | server send(:<nickname> TOPIC <channel> :<topic>)
+// client send(TOPIC <channel> <topic>) | server send(:<nickname> TOPIC <channel> <topic>)
 std::string Topic::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");

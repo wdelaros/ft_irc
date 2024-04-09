@@ -1,5 +1,6 @@
 #include "../include/PrivMsg.hpp"
 #include "../include/Server.hpp"
+#include <cstddef>
 #include <string>
 #include <sys/socket.h>
 #include <vector>
@@ -18,8 +19,10 @@ std::string PrivMsg::sendChannelMsg(Server& server, User& user, const std::strin
 		if (channel->isUserInChannel(user.getNickname()))
 			channel->sendMsg(user, msg);
 		else
-			return ERR_USERNOTINCHANNEL(user.getNickname(), channelName);
+			return ERR_CANNOTSENDTOCHAN(user.getNickname(), channelName);
 	}
+	else
+		return ERR_NOSUCHCHANNEL(channelName);
 	return "";
 }
 
@@ -35,10 +38,20 @@ std::string PrivMsg::sendPrivMsg(Server& server, const std::string& msg, const s
 std::string PrivMsg::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");
+	if (vec.size() < 2)
+		return ERR_NORECIPIENT(eventUser.getNickname(), vec[0]);
+	else if (vec.size() < 3)
+		return ERR_NOTEXTTOSEND(eventUser.getNickname(), "No text to send!");
+	else if (vec.size() > 3)
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+
 	std::string target = vec[1];
-	msg = ":" + eventUser.getNickname() + " PRIVMSG " + target + " " + buffer.substr(buffer.find_first_of(":")) + "\r\n";
+	msg = ":" + eventUser.getNickname() + " PRIVMSG " + target + " " + vec[2] + "\r\n";
 	if (target[0] == '#' || target[0] == '&')
 		return sendChannelMsg(server, eventUser, msg, target);
 	else
 		return sendPrivMsg(server, msg, target);
 }
+
+// for (size_t i = 0; i < vec.size(); i++)
+// 	std::cout << vec[i] << std::endl;

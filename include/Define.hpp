@@ -15,14 +15,22 @@
 #define RPL_NAMREPLY(...) /*353*/ GET_MACRO(__VA_ARGS__, RPL_NAMREPLY2, RPL_NAMREPLY1)(__VA_ARGS__)
 #define RPL_ENDOFNAMES(nickname, channel) "366 " + nickname + " " + channel + " :End of /NAMES list" + "\r\n"
 
+#define ERR_UNKNOWNERROR(nickname, command, reason) "400 " + nickname + " " + command + " :" + reason + "\r\n"
 #define ERR_NOSUCHNICK(nickname) "401 '" + nickname + "' :not found!\r\n";
 #define ERR_NOSUCHCHANNEL(channel) "403 '" + channel + "' :No such channel\r\n"
+#define ERR_CANNOTSENDTOCHAN(nickname, channel) "404 " + nickname + " " + channel + " :Cannot send to channel\r\n"
+#define ERR_NOORIGIN(nickname) "409 " + nickname + " :No origin specified\r\n"
+#define ERR_NORECIPIENT(nickname, command) "411 " + nickname + " :No recipient given (" + command + ")\r\n"
+#define ERR_NOTEXTTOSEND(nickname, reason) "412 " + nickname + " :" + reason + "\r\n"
 #define ERR_UNKNOWNCOMMAND(command) "421 '" + command + "' :Unknow command!\r\n"
+#define ERR_NONICKNAMEGIVEN(nickname) "431 " + nickname + " :No nickname given\r\n"
 #define ERR_ERRONEUSNICKNAME(nickname, reason) "432 '" + buffer + "' :" + reason + "\r\n"
 #define ERR_NICKNAMEINUSE(nickname) "433 '" + nickname + "' :Nickname already in use!\r\n"
 #define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " " + channel + " :You're not in this channel!\r\n"
 #define ERR_USERONCHANNEL(nickname, channel)  "443 " + nickname + " " + channel + " :You're already on that channel!\r\n"
 #define ERR_NOTREGISTERED(reason) "451 PRIVMSG " + reason + "\r\n"
+#define ERR_NEEDMOREPARAMS(nickname, command) "461 " + nickname + " " + command + " :Not enough parameters\r\n"
+#define ERR_ALREADYREGISTRED(nickname) "462 " + nickname + " :Unauthorized command (already registered)\r\n"
 #define ERR_KEYSET(channel) "467 " + channel + " :Channel key already set\r\n"
 #define ERR_CHANNELISFULL(channel) "471 '" + channel + "':Cannot join channel (+l)\r\n"
 #define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel + "\r\n"

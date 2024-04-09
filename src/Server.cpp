@@ -217,13 +217,15 @@ std::vector<std::string> tokenize(const std::string& buffer, const std::string& 
 
 	while (endPos != std::string::npos) {
 		token = buffer.substr(startPos, endPos - startPos);
+		if (token.find(":") != std::string::npos)
+			break ;
 		if (token.find(delimiter) == std::string::npos)
 			vector.push_back(token);
 		startPos = endPos + 1;
 		endPos = buffer.find(delimiter, startPos);
 	}
 	token = buffer.substr(startPos);
-	if (token.find(delimiter) == std::string::npos)
+	if (token.find(delimiter) == std::string::npos || token.find(":") != std::string::npos)
 		vector.push_back(token);
 	return vector;
 }

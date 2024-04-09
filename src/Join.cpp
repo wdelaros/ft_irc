@@ -68,6 +68,8 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 	std::vector<std::string> vec = tokenize(buffer, " ");
 	std::map<std::string, std::string> channelKey;
 
+	if (vec.size() < 2)
+		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
 	if (vec[1] == "0") {
 		server.disconnectUserChannel(eventUser);
 		return "";
