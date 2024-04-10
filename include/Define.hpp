@@ -27,6 +27,7 @@
 #define ERR_ERRONEUSNICKNAME(nickname, reason) "432 '" + buffer + "' :" + reason + "\r\n"
 #define ERR_NICKNAMEINUSE(nickname) "433 '" + nickname + "' :Nickname already in use!\r\n"
 #define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " " + channel + " :You're not in this channel!\r\n"
+#define ERR_NOTONCHANNEL(nickname, channel) "442 " + nickname + " " + channel + " :You're not on that channel\r\n"
 #define ERR_USERONCHANNEL(nickname, channel)  "443 " + nickname + " " + channel + " :You're already on that channel!\r\n"
 #define ERR_NOTREGISTERED(reason) "451 PRIVMSG " + reason + "\r\n"
 #define ERR_NEEDMOREPARAMS(nickname, command) "461 " + nickname + " " + command + " :Not enough parameters\r\n"

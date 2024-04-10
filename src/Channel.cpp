@@ -63,7 +63,7 @@ void Channel::setKey(const std::string& key) {
 }
 
 void Channel::setTopic(const std::string& topic) {
-	_topic = topic; // not finish
+	_topic = topic;
 }
 
 void Channel::setMode(const std::string& mode) {

@@ -10,18 +10,35 @@ Part::~Part() {
 
 }
 
-// client send(PART <channel> (+,-)<mode param> <nickname>) | server send(:<nickname> PART <channel> (+,-)<mode param>)
+// client send(PART <channel> :<message>) | server send(:<nickname> PART <channel> :<message>)
 std::string Part::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");
-	Channel *channel = server.getChannel(vec[1]);
-	if (channel->isUserInChannel(eventUser.getNickname())) {
-		channel->disconnectUser(&eventUser, buffer.substr(buffer.find_first_of(":") + 1));
-		std::cout << "Channel: " << channel->getName() << "	user connected: " << channel->getUserCount() << std::endl;
-		if (!channel->getUserCount())
-			server.deleteChannel(channel->getName());
+
+	if (vec.size() < 2)
+		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), buffer);
+	if (vec.size() > 2) {
+		if (vec[2][0] != ':')
+			return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (PART <channel> :<message>) or (PART <channel>)");
+		if (vec.size() > 3)
+			return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+	}
+
+	if (server.isChannelExist(vec[1])) {
+		Channel *channel = server.getChannel(vec[1]);
+		if (channel->isUserInChannel(eventUser.getNickname())) {
+			if (vec.size() > 2)
+				channel->disconnectUser(&eventUser, vec[2]);
+			else
+				channel->disconnectUser(&eventUser, "bye");
+			std::cout << "Channel: " << channel->getName() << "	user connected: " << channel->getUserCount() << std::endl;
+			if (!channel->getUserCount())
+				server.deleteChannel(channel->getName());
+		}
+		else
+			msg = ERR_NOTONCHANNEL(eventUser.getNickname(), vec[1]);
 	}
 	else
-		msg = ERR_USERNOTINCHANNEL(eventUser.getNickname(), vec[1]);
+		return ERR_NOSUCHCHANNEL(vec[1]);
 	return msg;
 }

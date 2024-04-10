@@ -136,7 +136,7 @@ void Server::deleteChannel(const std::string& channelName) {
 
 void Server::run() {
 	int fd;
-	char buffer[BUFSIZ * 8];
+	char buffer[8192];
 	while (!g_stop) {
 		if (poll(_poll.data(), _userCount + 1, 0) == -1)
 			throw std::invalid_argument(strerror(errno));
@@ -151,8 +151,9 @@ void Server::run() {
 			}
 			else if(_poll[i].revents & POLLIN) {
 				User& eventUser = *_listUser[fd];
-				int ret = recv(_poll[i].fd, buffer, BUFSIZ * 8, MSG_DONTWAIT);
+				int ret = recv(_poll[i].fd, buffer, 8192, MSG_DONTWAIT);
 				if (ret <= 0) {
+					std::cout << "Client " << this->_listUser[fd]->getNickname() << " " << _poll[i].fd << " disconnected" << std::endl;
 					disconnectUser(i, fd);
 					continue ;
 				}

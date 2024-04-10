@@ -9,32 +9,34 @@ Topic::~Topic() {
 
 }
 
-// client send(TOPIC <channel> <topic>) | server send(:<nickname> TOPIC <channel> <topic>)
+// client send(TOPIC <channel> :<topic>) | server send(:<nickname> TOPIC <channel> :<topic>)
 std::string Topic::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");
-	buffer = buffer.substr(buffer.find_first_of(" \r\n") + 1);
+
+	if (vec.size() < 2)
+		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), buffer);
+	else if (vec.size() > 3)
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (TOPIC <channel> :<topic>)");
 
 	if (server.isChannelExist(vec[1])) {
 		Channel* channel = server.getChannel(vec[1]);
 		if (channel->isUserInChannel(eventUser.getNickname())) {
 			if (vec.size() < 3)
-				msg = channel->getTopic();
+				channel->sendTopic(&eventUser); //not finish
 			else if (channel->getMode().find("t") != std::string::npos) {
 				if (channel->getIsOp(eventUser))
-					channel->setTopic(vec[2]);
+					channel->setTopic(vec[2].substr(1));
 				else
 					msg = ERR_CHANOPRIVSNEEDED(channel->getName());
 			}
 			else
-				channel->setTopic(vec[2]); //to change
+				channel->setTopic(vec[2].substr(1));
 		}
 		else
 			msg = ERR_USERNOTINCHANNEL(eventUser.getNickname(), channel->getName());
 	}
 	else
-		msg = ERR_NOSUCHCHANNEL(buffer.substr(0, buffer.find_first_of(" \r\n")));
+		msg = ERR_NOSUCHCHANNEL(vec[1]);
 	return msg;
 }
-
-//topic msg is_print();

@@ -38,8 +38,11 @@ std::string PrivMsg::sendPrivMsg(Server& server, const std::string& msg, const s
 std::string PrivMsg::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");
+
 	if (vec.size() < 2)
 		return ERR_NORECIPIENT(eventUser.getNickname(), vec[0]);
+	else if (vec.size() > 2 && vec[2][0] != ':')
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (PRIVMSG <target> :<message>)");
 	else if (vec.size() < 3)
 		return ERR_NOTEXTTOSEND(eventUser.getNickname(), "No text to send!");
 	else if (vec.size() > 3)

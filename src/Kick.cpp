@@ -9,7 +9,7 @@ Kick::~Kick() {
 
 }
 
-// client send(KICK <channel> <nickname victim> <message>) | server send(:<nickname> KICK <channel> <nickname victim>)
+// client send(KICK <channel> <victim> :<message>) | server send(:<nickname> KICK <channel> <victim> :<message>)
 std::string Kick::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");

@@ -37,20 +37,22 @@ std::string parseMode(Channel* channel, const std::string& mode) {
 std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");
-	buffer = buffer.substr(buffer.find_first_of(" \r\n") + 1);
+
+	if (vec.size() < 2)
+		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
 
 	if (server.isChannelExist(vec[1])) {
 		Channel* channel = server.getChannel(vec[1]);
-		if (eventUser.getIsOp() || channel->isUserInChannel(eventUser.getNickname())) {
+		if (/*eventUser.getIsOp() || */channel->isUserInChannel(eventUser.getNickname())) {
 			if (vec.size() > 2) {
-				if (channel->getUserList()[&eventUser] || eventUser.getIsOp()) {
+				if (channel->getUserList()[&eventUser] /*|| eventUser.getIsOp()*/) {
 					if (checkMode(vec[2], "itkol"))
 						msg = parseMode(channel, vec[2]);
 					else
 						msg = ERR_UNKNOWNMODE(vec[2], vec[1]);
 				}
 				else
-					msg = ERR_CHANOPRIVSNEEDED(buffer.substr(0, buffer.find_first_of(" \r\n")));
+					msg = ERR_CHANOPRIVSNEEDED(vec[1]);
 			}
 			else
 				channel->sendMode(eventUser);
@@ -59,7 +61,7 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 			msg = ERR_USERNOTINCHANNEL(eventUser.getNickname(), channel->getName());
 	}
 	else
-		msg = ERR_NOSUCHCHANNEL(buffer.substr(0, buffer.find_first_of(" \r\n")));
+		msg = ERR_NOSUCHCHANNEL(vec[1]);
 	return msg;
 }
 

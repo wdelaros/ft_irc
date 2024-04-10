@@ -32,13 +32,15 @@ bool isValidStr(const std::string& buffer, bool isAlphaNum, const std::string& o
 std::string Nickname::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
 	std::vector<std::string> vec = tokenize(buffer, " ");
+
 	if (vec.size() < 2) {
 		msg = ERR_NONICKNAMEGIVEN(eventUser.getNickname());
 		if (!eventUser.getIsAuth())
 			return msg + ERR_NOTREGISTERED((std::string)"You are not registered. Give a nickname (NICK <nickname>).");
 	}
 	if (vec.size() > 2)
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer.substr(0, buffer.find_first_of("\r\n")), "Too many parameters");
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+
 	if (vec[1].length() > 9)
 		msg = ERR_ERRONEUSNICKNAME(vec[1], "Nickname too long!");
 	else if (!isValidStr(vec[1], 0, "[]`{}|\\^_^"))

@@ -70,6 +70,19 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 
 	if (vec.size() < 2)
 		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
+	else if (vec.size() < 4) {
+		if (vec.size() < 3) {
+			if (vec[1][0] == ',' || vec[1][vec[1].length() - 1] == ',')
+				return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (JOIN <channel name>[,<channel name>])");
+		}
+		else if (vec.size() < 4) {
+			if (vec[2][0] == ',' || vec[2][vec[2].length() - 1] == ',')
+				return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (JOIN <channel name>[,<channel name>] <key>[,<key>])");
+		}
+	}
+	else if (vec.size() > 3)
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+
 	if (vec[1] == "0") {
 		server.disconnectUserChannel(eventUser);
 		return "";
@@ -89,10 +102,10 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
 					msg = "";
 				}
-				else if (eventUser.getIsOp()) {
-					if (!joinChannel(channel, eventUser, it))
-						msg = "471 '" + it->first + "':Cannot join channel (+l) limit: " + reinterpret_cast<const std::string&>(channel->getLimitUser()) + "\r\n";
-				}
+				// else if (eventUser.getIsOp()) {
+				// 	if (!joinChannel(channel, eventUser, it))
+				// 		msg = "471 '" + it->first + "':Cannot join channel (+l) limit: " + reinterpret_cast<const std::string&>(channel->getLimitUser()) + "\r\n";
+				// }
 				else if (channel->getMode().find("i") != std::string::npos) {
 					if (channel->getKey() == it->second || channel->isUserInInviteList(&eventUser)) {
 						if (!joinChannel(channel, eventUser, it))

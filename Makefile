@@ -24,7 +24,7 @@ ERASE_LINE	=	\033[2K\r
 
 # Compiler and flags
 CC			=	c++
-CFLAGS		=	-Wall -Wextra -Werror -std=c++98
+CFLAGS		=	-Wall -Wextra -Werror -std=c++11 -g
 RM			=	rm -rf
 
 # Sources are all .cpp files

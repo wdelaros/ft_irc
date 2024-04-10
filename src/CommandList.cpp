@@ -29,7 +29,9 @@ CommandList::CommandList() {
 // _cmdList["LIST"] = new List;
 
 CommandList::~CommandList() {
-
+	for (std::map<std::string, Command*>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)
+		delete it->second;
+	_cmdList.clear();
 }
 
 const std::vector<std::string>& CommandList::getCmd() const {
@@ -59,11 +61,18 @@ void CommandList::parseBuffer(const std::string& buffer) {
 	size_t endPos = 0;
 
 	for (size_t i = 0; i < buffer.size();i++) {
-		if (buffer[i] == '\r' && buffer[i + 1] == '\n') {
+		if ((buffer[i] == '\r' && buffer[i + 1] == '\n')) {
 			endPos = i;
 			_line.push_back(buffer.substr(startPos, endPos - startPos));
 			startPos = endPos + 2;
 		}
+		/*testing*/
+		else if (buffer[i] == '\n' && buffer[i - 1] != '\r') {
+			endPos = i;
+			_line.push_back(buffer.substr(startPos, endPos - startPos));
+			startPos = endPos + 1;
+		}
+		/*end testing*/
 	}
 }
 

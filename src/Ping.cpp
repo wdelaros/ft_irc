@@ -13,7 +13,9 @@ Ping::~Ping() {
 std::string Ping::execute(Server& server, User& eventUser, std::string& buffer) const {
 	(void)server;
 	std::vector<std::string> vec = tokenize(buffer, " ");
+
 	if (vec.size() < 2)
 		return ERR_NOORIGIN(eventUser.getNickname());
+
 	return ("PONG " + buffer.substr(buffer.find_first_of(" \r\n") + 1) + "\r\n");
 }
