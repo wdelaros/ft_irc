@@ -1,12 +1,16 @@
 #include "../include/Pass.hpp"
 #include "../include/Server.hpp"
 
-Pass::Pass() {
+Pass::Pass(): _name("pass") {
 
 }
 
 Pass::~Pass() {
 
+}
+
+const std::string& Pass::getName() const {
+	return _name;
 }
 
 std::string Pass::execute(Server& server, User& eventUser, std::string& buffer) const {

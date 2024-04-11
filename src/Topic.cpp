@@ -1,12 +1,16 @@
 #include "../include/Topic.hpp"
 #include "../include/Server.hpp"
 
-Topic::Topic() {
+Topic::Topic(): _name("topic") {
 
 }
 
 Topic::~Topic() {
 
+}
+
+const std::string& Topic::getName() const {
+	return _name;
 }
 
 // client send(TOPIC <channel> :<topic>) | server send(:<nickname> TOPIC <channel> :<topic>)
@@ -16,6 +20,10 @@ std::string Topic::execute(Server& server, User& eventUser, std::string& buffer)
 
 	if (vec.size() < 2)
 		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), buffer);
+	else if (vec.size() == 3) {
+		if (vec[2][0] != ':')
+			return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (TOPIC <channel> :<topic>)");
+	}
 	else if (vec.size() > 3)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (TOPIC <channel> :<topic>)");
 

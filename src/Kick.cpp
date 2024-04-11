@@ -1,12 +1,16 @@
 #include "../include/Kick.hpp"
 #include "../include/Server.hpp"
 
-Kick::Kick() {
+Kick::Kick(): _name("kick") {
 
 }
 
 Kick::~Kick() {
 
+}
+
+const std::string& Kick::getName() const {
+	return _name;
 }
 
 // client send(KICK <channel> <victim> :<message>) | server send(:<nickname> KICK <channel> <victim> :<message>)

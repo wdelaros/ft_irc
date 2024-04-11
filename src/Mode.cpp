@@ -3,12 +3,16 @@
 #include <cstddef>
 #include <vector>
 
-Mode::Mode() {
+Mode::Mode(): _name("mode") {
 
 }
 
 Mode::~Mode() {
 
+}
+
+const std::string& Mode::getName() const {
+	return _name;
 }
 
 int checkMode(const std::string& mode, const std::string& delimiter) {

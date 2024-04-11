@@ -5,12 +5,16 @@
 #include <sys/socket.h>
 #include <vector>
 
-PrivMsg::PrivMsg() {
+PrivMsg::PrivMsg(): _name("privmsg") {
 
 }
 
 PrivMsg::~PrivMsg() {
 
+}
+
+const std::string& PrivMsg::getName() const {
+	return _name;
 }
 
 std::string PrivMsg::sendChannelMsg(Server& server, User& user, const std::string& msg, const std::string& channelName) const {
@@ -41,12 +45,12 @@ std::string PrivMsg::execute(Server& server, User& eventUser, std::string& buffe
 
 	if (vec.size() < 2)
 		return ERR_NORECIPIENT(eventUser.getNickname(), vec[0]);
-	else if (vec.size() > 2 && vec[2][0] != ':')
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (PRIVMSG <target> :<message>)");
-	else if (vec.size() < 3)
+	else if (vec.size() == 2)
 		return ERR_NOTEXTTOSEND(eventUser.getNickname(), "No text to send!");
 	else if (vec.size() > 3)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+	else if (vec.size() > 2 && vec[2][0] != ':')
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (PRIVMSG <target> :<message>)");
 
 	std::string target = vec[1];
 	msg = ":" + eventUser.getNickname() + " PRIVMSG " + target + " " + vec[2] + "\r\n";

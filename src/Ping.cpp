@@ -1,12 +1,16 @@
 #include "../include/Ping.hpp"
 #include "../include/Server.hpp"
 
-Ping::Ping() {
+Ping::Ping(): _name("ping") {
 
 }
 
 Ping::~Ping() {
 
+}
+
+const std::string& Ping::getName() const {
+	return _name;
 }
 
 // client send(PING <message>) | server send(PONG <message>)

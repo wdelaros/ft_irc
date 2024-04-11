@@ -173,7 +173,7 @@ const std::string Server::Auth(Command *cmd, std::string& buffer, User &eventUse
 		else
 			msg = ERR_NOTREGISTERED((std::string)"Password required! Use /set irc.server.<server_name>.password <password>!");
 	}
-	else if (cmd)
+	else if (cmd->getName() == "nick" || cmd->getName() == "user")
 		msg = cmd->execute(*this, eventUser, buffer);
 	else
 		msg = ERR_NOTREGISTERED((std::string)"You are not registered.");

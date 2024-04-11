@@ -8,12 +8,16 @@
 # include <_ctype.h>
 #endif
 
-Nickname::Nickname() {
+Nickname::Nickname(): _name("nick") {
 
 }
 
 Nickname::~Nickname() {
 
+}
+
+const std::string& Nickname::getName() const {
+	return _name;
 }
 
 bool isValidStr(const std::string& buffer, bool isAlphaNum, const std::string& other) {
@@ -38,7 +42,7 @@ std::string Nickname::execute(Server& server, User& eventUser, std::string& buff
 		if (!eventUser.getIsAuth())
 			return msg + ERR_NOTREGISTERED((std::string)"You are not registered. Give a nickname (NICK <nickname>).");
 	}
-	if (vec.size() > 2)
+	else if (vec.size() > 2)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
 
 	if (vec[1].length() > 9)

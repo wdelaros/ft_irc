@@ -8,12 +8,16 @@
 #include <variant>
 #include <vector>
 
-Join::Join() {
+Join::Join(): _name("join") {
 
 }
 
 Join::~Join() {
 
+}
+
+const std::string& Join::getName() const {
+	return _name;
 }
 
 void Join::CreateChannel(Server& server, User& eventUser, const std::string& channelName) const {

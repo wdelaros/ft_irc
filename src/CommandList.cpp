@@ -66,13 +66,13 @@ void CommandList::parseBuffer(const std::string& buffer) {
 			_line.push_back(buffer.substr(startPos, endPos - startPos));
 			startPos = endPos + 2;
 		}
-		/*testing*/
-		else if (buffer[i] == '\n' && buffer[i - 1] != '\r') {
-			endPos = i;
-			_line.push_back(buffer.substr(startPos, endPos - startPos));
-			startPos = endPos + 1;
-		}
-		/*end testing*/
+		// /*testing*/
+		// else if (buffer[i] == '\n' && buffer[i - 1] != '\r') {
+		// 	endPos = i;
+		// 	_line.push_back(buffer.substr(startPos, endPos - startPos));
+		// 	startPos = endPos + 1;
+		// }
+		// /*end testing*/
 	}
 }
 

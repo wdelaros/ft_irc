@@ -1,12 +1,16 @@
 #include "../include/Username.hpp"
 #include "../include/Server.hpp"
 
-Username::Username() {
+Username::Username(): _name("user") {
 
 }
 
 Username::~Username() {
 
+}
+
+const std::string& Username::getName() const {
+	return _name;
 }
 
 std::string Username::execute(Server& server, User& eventUser, std::string& buffer) const {

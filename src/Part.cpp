@@ -2,12 +2,16 @@
 #include "../include/Server.hpp"
 #include <cstddef>
 
-Part::Part() {
+Part::Part(): _name("part") {
 
 }
 
 Part::~Part() {
 
+}
+
+const std::string& Part::getName() const {
+	return _name;
 }
 
 // client send(PART <channel> :<message>) | server send(:<nickname> PART <channel> :<message>)
