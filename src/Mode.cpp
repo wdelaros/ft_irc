@@ -75,30 +75,36 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 // o	privilege op			MODE (+,-)o <nickname>
 // l	limit user				MODE (+l <limit>,-l)
 
+
+//call Invite cmd or add to invite list in channel
 std::string invitationMode()
 {
 	std::string msg;
 	return (msg);
 }
 
+//(todo: add Operator toggle on topic in channels) toggles topic for ops whenever called
 std::string restrictionMode()
 {
 	std::string msg;
 	return (msg);
 }
 
+//adds password to channel, maybe changes if already has password
 std::string passwordMode()
 {
 	std::string msg;
 	return (msg);
 }
 
-std::string privilegeMode()
+//modifies op privilege to target user
+std::string privilegeMode(std::string targetName)
 {
 	std::string msg;
 	return (msg);
 }
 
+//modifies limit amount of users for channel
 std::string limitMode()
 {
 	std::string msg;
