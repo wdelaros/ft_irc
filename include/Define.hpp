@@ -6,14 +6,18 @@
 #define RPL_CHANNELMODEIS2(nickname, channel, mode) "324 " + nickname + " " + channel + " +" + mode + "\r\n"
 #define RPL_NAMREPLY1(channel, list) "353 = " + channel + " :" + list + "\r\n"
 #define RPL_NAMREPLY2(nickname, channel, list) "353 " + nickname + " = " + channel + " :" + list + "\r\n"
+#define ERR_USERONCHANNEL1(nickname, channel)  "443 " + nickname + " " + channel + " :You're already on that channel!\r\n"
+#define ERR_USERONCHANNEL2(nickname, target, channel)  "443 " + nickname + " " + target + " " + channel + " :is already on that channel!\r\n"
 
 #define RPL_WELCOME(nickname, username) "001 " + nickname + " You are now register. Welcome on ft_irc " + username + "!\r\n"
 
 #define RPL_CHANNELMODEIS(...) /*324*/ GET_MACRO(__VA_ARGS__, RPL_CHANNELMODEIS2, RPL_CHANNELMODEIS1)(__VA_ARGS__)
 #define RPL_NOTOPIC(nickname, channel) "331 " + nickname + " " + channel + " :No topic set" + "\r\n"
 #define RPL_TOPIC(nickname, channel, topic)  "332 " + nickname + " " + channel + " :" + topic + "\r\n"
+#define RPL_INVITING(nickname, channel, target) "341 " + nickname + " " + channel + " " + target + "\r\n"
 #define RPL_NAMREPLY(...) /*353*/ GET_MACRO(__VA_ARGS__, RPL_NAMREPLY2, RPL_NAMREPLY1)(__VA_ARGS__)
 #define RPL_ENDOFNAMES(nickname, channel) "366 " + nickname + " " + channel + " :End of /NAMES list" + "\r\n"
+
 
 #define ERR_UNKNOWNERROR(nickname, command, reason) "400 " + nickname + " " + command + " :" + reason + "\r\n"
 #define ERR_NOSUCHNICK(nickname) "401 '" + nickname + "' :not found!\r\n";
@@ -28,7 +32,7 @@
 #define ERR_NICKNAMEINUSE(nickname) "433 '" + nickname + "' :Nickname already in use!\r\n"
 #define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " " + channel + " :You're not in this channel!\r\n"
 #define ERR_NOTONCHANNEL(nickname, channel) "442 " + nickname + " " + channel + " :You're not on that channel\r\n"
-#define ERR_USERONCHANNEL(nickname, channel)  "443 " + nickname + " " + channel + " :You're already on that channel!\r\n"
+#define ERR_USERONCHANNEL(...) /*443*/ GET_MACRO(__VA_ARGS__, ERR_USERONCHANNEL2, ERR_USERONCHANNEL1)(__VA_ARGS__)
 #define ERR_NOTREGISTERED(reason) "451 PRIVMSG " + reason + "\r\n"
 #define ERR_NEEDMOREPARAMS(nickname, command) "461 " + nickname + " " + command + " :Not enough parameters\r\n"
 #define ERR_ALREADYREGISTRED(nickname) "462 " + nickname + " :Unauthorized command (already registered)\r\n"

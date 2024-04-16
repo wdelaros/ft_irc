@@ -47,9 +47,9 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 
 	if (server.isChannelExist(vec[1])) {
 		Channel* channel = server.getChannel(vec[1]);
-		if (/*eventUser.getIsOp() || */channel->isUserInChannel(eventUser.getNickname())) {
+		if (channel->isUserInChannel(eventUser.getNickname())) {
 			if (vec.size() > 2) {
-				if (channel->getUserList()[&eventUser] /*|| eventUser.getIsOp()*/) {
+				if (channel->getUserList()[&eventUser]) {
 					if (checkMode(vec[2], "itkol"))
 						msg = parseMode(channel, vec[2]);
 					else

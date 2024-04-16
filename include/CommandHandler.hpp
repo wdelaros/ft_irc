@@ -3,14 +3,14 @@
 #include "Command.hpp"
 #include <vector>
 
-class CommandList {
+class CommandHandler {
 	private:
 		std::map<std::string, Command*>	_cmdList;
 		std::vector<std::string>		_line;
 
 	public:
-		CommandList();
-		~CommandList();
+		CommandHandler();
+		~CommandHandler();
 
 		const std::vector<std::string>& getCmd() const;
 

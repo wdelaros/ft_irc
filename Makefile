@@ -24,7 +24,7 @@ ERASE_LINE	=	\033[2K\r
 
 # Compiler and flags
 CC			=	c++
-CFLAGS		=	-Wall -Wextra -Werror -std=c++11 -g
+CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -g
 RM			=	rm -rf
 
 # Sources are all .cpp files
@@ -32,7 +32,7 @@ SRCS		=	main.cpp \
 				Server.cpp \
 				User.cpp \
 				Command.cpp \
-				CommandList.cpp \
+				CommandHandler.cpp \
 				Ping.cpp \
 				PrivMsg.cpp \
 				Nickname.cpp \
@@ -43,6 +43,7 @@ SRCS		=	main.cpp \
 				Mode.cpp \
 				Part.cpp \
 				Topic.cpp \
+				Invite.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))

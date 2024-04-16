@@ -14,7 +14,7 @@
 #include "Define.hpp"
 
 #include "Command.hpp"
-#include "CommandList.hpp"
+#include "CommandHandler.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
 
@@ -30,7 +30,7 @@ class Server {
 
 		struct sockaddr_in		_address;
 
-		CommandList				_cmdList;
+		CommandHandler			_cmdHandler;
 
 	public:
 		Server(char **argv);

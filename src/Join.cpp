@@ -106,10 +106,6 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
 					msg = "";
 				}
-				// else if (eventUser.getIsOp()) {
-				// 	if (!joinChannel(channel, eventUser, it))
-				// 		msg = "471 '" + it->first + "':Cannot join channel (+l) limit: " + reinterpret_cast<const std::string&>(channel->getLimitUser()) + "\r\n";
-				// }
 				else if (channel->getMode().find("i") != std::string::npos) {
 					if (channel->getKey() == it->second || channel->isUserInInviteList(&eventUser)) {
 						if (!joinChannel(channel, eventUser, it))

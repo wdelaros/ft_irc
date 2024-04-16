@@ -5,13 +5,13 @@
 #include <string>
 #include <vector>
 
-class Oper: public Command {
+class Invite: public Command {
 	private:
 		std::string _name;
 
 	public:
-		Oper();
-		~Oper();
+		Invite();
+		~Invite();
 
 		const std::string& getName() const;
 

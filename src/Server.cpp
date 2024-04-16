@@ -191,10 +191,10 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 
 	std::cout << eventUser.getNickname() << " "<< eventUser.getFd() << " :: " << buffer;
 
-	_cmdList.parseBuffer(buffer);
-	vecCmd = _cmdList.getCmd();
+	_cmdHandler.parseBuffer(buffer);
+	vecCmd = _cmdHandler.getCmd();
 	for (std::vector<std::string>::iterator it = vecCmd.begin(); it != vecCmd.end(); it++) {
-		Command *cmd = _cmdList.createCommand();
+		Command *cmd = _cmdHandler.createCommand();
 		if (cmd) {
 			if (!eventUser.getIsAuth())
 				finalMsg = Auth(cmd, *it, eventUser);
@@ -206,7 +206,7 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 
 		if (!finalMsg.empty())
 			send(eventUser.getFd(), finalMsg.c_str(), finalMsg.size(), 0);
-		_cmdList.pop();
+		_cmdHandler.pop();
 	}
 }
 

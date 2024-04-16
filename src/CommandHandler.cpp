@@ -1,10 +1,9 @@
-#include "../include/CommandList.hpp"
+#include "../include/CommandHandler.hpp"
 #include "../include/Username.hpp"
 #include "../include/Nickname.hpp"
 #include "../include/PrivMsg.hpp"
-// #include "../include/Invite.hpp"
+#include "../include/Invite.hpp"
 #include "../include/Topic.hpp"
-// #include "../include/Oper.hpp"
 // #include "../include/Kick.hpp"
 #include "../include/Part.hpp"
 #include "../include/Mode.hpp"
@@ -12,33 +11,32 @@
 #include "../include/Ping.hpp"
 #include "../include/Pass.hpp"
 
-CommandList::CommandList() {
+CommandHandler::CommandHandler() {
 	_cmdList["PASS"] = new Pass;
 	_cmdList["PING"] = new Ping;
 	_cmdList["JOIN"] = new Join;
 	_cmdList["MODE"] = new Mode;
 	_cmdList["PART"] = new Part;
 	// _cmdList["KICK"] = new Kick;
-	// _cmdList["OPER"] = new Oper;
 	_cmdList["TOPIC"] = new Topic;
-	// _cmdList["INVITE"] = new Invite;
+	_cmdList["INVITE"] = new Invite;
 	_cmdList["NICK"] = new Nickname;
 	_cmdList["USER"] = new Username;
 	_cmdList["PRIVMSG"] = new PrivMsg;
 }
 // _cmdList["LIST"] = new List;
 
-CommandList::~CommandList() {
+CommandHandler::~CommandHandler() {
 	for (std::map<std::string, Command*>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)
 		delete it->second;
 	_cmdList.clear();
 }
 
-const std::vector<std::string>& CommandList::getCmd() const {
+const std::vector<std::string>& CommandHandler::getCmd() const {
 	return _line;
 }
 
-Command* CommandList::createCommand() {
+Command* CommandHandler::createCommand() {
 	std::string cmd = parseCmdName(_line.front());
 	if (_cmdList.find(cmd) != _cmdList.end())
 		return _cmdList[cmd];
@@ -46,7 +44,7 @@ Command* CommandList::createCommand() {
 		return NULL;
 }
 
-std::string CommandList::parseCmdName(const std::string& cmd) {
+std::string CommandHandler::parseCmdName(const std::string& cmd) {
 	if (cmd.empty())
 		return cmd;
 	size_t pos = cmd.find_first_of(" ");
@@ -56,7 +54,7 @@ std::string CommandList::parseCmdName(const std::string& cmd) {
 		return cmd.substr(0, pos);
 }
 
-void CommandList::parseBuffer(const std::string& buffer) {
+void CommandHandler::parseBuffer(const std::string& buffer) {
 	size_t startPos = 0;
 	size_t endPos = 0;
 
@@ -76,6 +74,6 @@ void CommandList::parseBuffer(const std::string& buffer) {
 	}
 }
 
-void CommandList::pop() {
+void CommandHandler::pop() {
 	_line.erase(_line.begin());
 }
