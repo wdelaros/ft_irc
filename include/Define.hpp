@@ -2,6 +2,8 @@
 
 #define GET_MACRO(_1,_2,_3,NAME,...) NAME
 
+
+/* --- Macros --- */
 #define RPL_CHANNELMODEIS1(nickname, channel) "324 " + nickname + " " + channel + "\r\n"
 #define RPL_CHANNELMODEIS2(nickname, channel, mode) "324 " + nickname + " " + channel + " +" + mode + "\r\n"
 #define RPL_NAMREPLY1(channel, list) "353 = " + channel + " :" + list + "\r\n"
@@ -9,8 +11,14 @@
 #define ERR_USERONCHANNEL1(nickname, channel)  "443 " + nickname + " " + channel + " :You're already on that channel!\r\n"
 #define ERR_USERONCHANNEL2(nickname, target, channel)  "443 " + nickname + " " + target + " " + channel + " :is already on that channel!\r\n"
 
+
+/* --- Connection --- */
 #define RPL_WELCOME(nickname, username) "001 " + nickname + " You are now register. Welcome on ft_irc " + username + "!\r\n"
 
+
+/* --- Command --- */
+#define RPL_LIST(nickname, list) "322 " + nickname + " " + list + "\r\n"
+#define RPL_LISTEND(nickname) "323 " + nickname + " :End of /LIST\r\n"
 #define RPL_CHANNELMODEIS(...) /*324*/ GET_MACRO(__VA_ARGS__, RPL_CHANNELMODEIS2, RPL_CHANNELMODEIS1)(__VA_ARGS__)
 #define RPL_NOTOPIC(nickname, channel) "331 " + nickname + " " + channel + " :No topic set" + "\r\n"
 #define RPL_TOPIC(nickname, channel, topic)  "332 " + nickname + " " + channel + " :" + topic + "\r\n"
@@ -19,6 +27,7 @@
 #define RPL_ENDOFNAMES(nickname, channel) "366 " + nickname + " " + channel + " :End of /NAMES list" + "\r\n"
 
 
+/* --- Error --- */
 #define ERR_UNKNOWNERROR(nickname, command, reason) "400 " + nickname + " " + command + " :" + reason + "\r\n"
 #define ERR_NOSUCHNICK(nickname) "401 '" + nickname + "' :not found!\r\n";
 #define ERR_NOSUCHCHANNEL(channel) "403 '" + channel + "' :No such channel\r\n"
@@ -41,4 +50,4 @@
 #define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel + "\r\n"
 #define ERR_INVITEONLYCHAN(channel) "473 '" + channel + "' :Cannot join channel (+i)\r\n"
 #define ERR_BADCHANNELKEY(channel, reason) "475 '" + channel + "' :" + reason + "\r\n"
-#define ERR_CHANOPRIVSNEEDED(channel) "482 '" + channel + "' :You're not channel operator!\r\n";
+#define ERR_CHANOPRIVSNEEDED(channel) "482 '" + channel + "' :You're not channel operator!\r\n"

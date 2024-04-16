@@ -44,6 +44,7 @@ SRCS		=	main.cpp \
 				Part.cpp \
 				Topic.cpp \
 				Invite.cpp \
+				List.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))

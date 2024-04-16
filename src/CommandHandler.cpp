@@ -10,6 +10,7 @@
 #include "../include/Join.hpp"
 #include "../include/Ping.hpp"
 #include "../include/Pass.hpp"
+#include "../include/List.hpp"
 
 CommandHandler::CommandHandler() {
 	_cmdList["PASS"] = new Pass;
@@ -17,14 +18,14 @@ CommandHandler::CommandHandler() {
 	_cmdList["JOIN"] = new Join;
 	_cmdList["MODE"] = new Mode;
 	_cmdList["PART"] = new Part;
-	// _cmdList["KICK"] = new Kick;
+	_cmdList["LIST"] = new List;
 	_cmdList["TOPIC"] = new Topic;
-	_cmdList["INVITE"] = new Invite;
 	_cmdList["NICK"] = new Nickname;
 	_cmdList["USER"] = new Username;
+	_cmdList["INVITE"] = new Invite;
 	_cmdList["PRIVMSG"] = new PrivMsg;
 }
-// _cmdList["LIST"] = new List;
+// _cmdList["KICK"] = new Kick;
 
 CommandHandler::~CommandHandler() {
 	for (std::map<std::string, Command*>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)

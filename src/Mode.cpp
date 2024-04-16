@@ -75,6 +75,35 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 // o	privilege op			MODE (+,-)o <nickname>
 // l	limit user				MODE (+l <limit>,-l)
 
+std::string invitationMode()
+{
+	std::string msg;
+	return (msg);
+}
+
+std::string restrictionMode()
+{
+	std::string msg;
+	return (msg);
+}
+
+std::string passwordMode()
+{
+	std::string msg;
+	return (msg);
+}
+
+std::string privilegeMode()
+{
+	std::string msg;
+	return (msg);
+}
+
+std::string limitMode()
+{
+	std::string msg;
+	return (msg);
+}
 
 // oper <nickname> <password>
 // IRC Operator = god
