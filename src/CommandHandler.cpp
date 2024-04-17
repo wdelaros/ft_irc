@@ -1,16 +1,4 @@
 #include "../include/CommandHandler.hpp"
-#include "../include/Username.hpp"
-#include "../include/Nickname.hpp"
-#include "../include/PrivMsg.hpp"
-#include "../include/Invite.hpp"
-#include "../include/Topic.hpp"
-// #include "../include/Kick.hpp"
-#include "../include/Part.hpp"
-#include "../include/Mode.hpp"
-#include "../include/Join.hpp"
-#include "../include/Ping.hpp"
-#include "../include/Pass.hpp"
-#include "../include/List.hpp"
 
 CommandHandler::CommandHandler() {
 	_cmdList["PASS"] = new Pass;
@@ -33,16 +21,20 @@ CommandHandler::~CommandHandler() {
 	_cmdList.clear();
 }
 
-const std::vector<std::string>& CommandHandler::getCmd() const {
+const std::vector<std::string>& CommandHandler::getVecCmd() const {
 	return _line;
 }
 
-Command* CommandHandler::createCommand() {
+Command* CommandHandler::getCmd() {
+	return _cmd;
+}
+
+void CommandHandler::createCommand() {
 	std::string cmd = parseCmdName(_line.front());
 	if (_cmdList.find(cmd) != _cmdList.end())
-		return _cmdList[cmd];
+		_cmd =  _cmdList[cmd];
 	else
-		return NULL;
+		_cmd = NULL;
 }
 
 std::string CommandHandler::parseCmdName(const std::string& cmd) {

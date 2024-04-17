@@ -13,7 +13,6 @@
 
 #include "Define.hpp"
 
-#include "Command.hpp"
 #include "CommandHandler.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
@@ -43,7 +42,7 @@ class Server {
 
 		void run();
 
-		const std::string Auth(Command *cmd, std::string& buffer, User &eventUser);
+		const std::string Auth(std::string& buffer, User &eventUser);
 		void handleMsg(const std::string& msg, User& eventUser);
 
 		/***********************CONNECTION***********************/

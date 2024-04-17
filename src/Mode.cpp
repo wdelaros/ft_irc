@@ -101,6 +101,7 @@ std::string passwordMode()
 std::string privilegeMode(std::string targetName)
 {
 	std::string msg;
+	(void)targetName;
 	return (msg);
 }
 

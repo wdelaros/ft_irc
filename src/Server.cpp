@@ -164,17 +164,17 @@ void Server::run() {
 	}
 }
 
-const std::string Server::Auth(Command *cmd, std::string& buffer, User &eventUser) {
+const std::string Server::Auth(std::string& buffer, User &eventUser) {
 	std::string msg;
 
 	if (!eventUser.getHavePass()) {
 		if (!buffer.compare(0, 5, "PASS "))
-			cmd->execute(*this, eventUser, buffer);
+			_cmdHandler.getCmd()->execute(*this, eventUser, buffer);
 		else
 			msg = ERR_NOTREGISTERED((std::string)"Password required! Use /set irc.server.<server_name>.password <password>!");
 	}
-	else if (cmd->getName() == "nick" || cmd->getName() == "user")
-		msg = cmd->execute(*this, eventUser, buffer);
+	else if (_cmdHandler.getCmd()->getName() == "nick" || _cmdHandler.getCmd()->getName() == "user")
+		msg = _cmdHandler.getCmd()->execute(*this, eventUser, buffer);
 	else
 		msg = ERR_NOTREGISTERED((std::string)"You are not registered.");
 
@@ -192,14 +192,14 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 	std::cout << eventUser.getNickname() << " "<< eventUser.getFd() << " :: " << buffer;
 
 	_cmdHandler.parseBuffer(buffer);
-	vecCmd = _cmdHandler.getCmd();
+	vecCmd = _cmdHandler.getVecCmd();
 	for (std::vector<std::string>::iterator it = vecCmd.begin(); it != vecCmd.end(); it++) {
-		Command *cmd = _cmdHandler.createCommand();
-		if (cmd) {
+		_cmdHandler.createCommand();
+		if (_cmdHandler.getCmd()) {
 			if (!eventUser.getIsAuth())
-				finalMsg = Auth(cmd, *it, eventUser);
+				finalMsg = Auth(*it, eventUser);
 			else
-				finalMsg = cmd->execute(*this, eventUser, *it);
+				finalMsg = _cmdHandler.getCmd()->execute(*this, eventUser, *it);
 		}
 		else if (it->compare(0, 10, "CAP LS 302"))
 			finalMsg = ERR_UNKNOWNCOMMAND(it->substr(0, it->find(" ")));
