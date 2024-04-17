@@ -1,6 +1,5 @@
 #include "../include/Part.hpp"
 #include "../include/Server.hpp"
-#include <cstddef>
 
 Part::Part(): _name("part") {
 

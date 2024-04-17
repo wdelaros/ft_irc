@@ -24,7 +24,11 @@ ERASE_LINE	=	\033[2K\r
 
 # Compiler and flags
 CC			=	c++
+ifndef LINUX
 CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -g
+else
+CFLAGS		=	-Wall -Wextra -Werror -std=c++11 -g
+endif
 RM			=	rm -rf
 
 # Sources are all .cpp files
@@ -55,6 +59,9 @@ OBJS		=	$(addprefix $(OBJS_DIR), $(OBJS_LST))
 #------------------------------------------------------------------------------#
 
 all: dir $(NAME)
+
+linux:
+	@make -s LINUX=1 all iplinux
 
 # Generates output file
 $(NAME): $(OBJS)
@@ -87,5 +94,19 @@ re: fclean all
 	@echo "$(ERASE_LINE)$(GREEN)✔️ $(ITALIC)Remake complete$(RESET)\
 	$(GREEN) ✔️$(RESET)"
 
+relinux: fclean linux
+	@echo "$(ERASE_LINE)$(GREEN)✔️ $(ITALIC)Remake complete$(RESET)\
+	$(GREEN) ✔️$(RESET)"
+
 ip:
-	@hostname -I || ipconfig getifaddr en0
+	@printf "$(GREEN) $(ITALIC) Your adress ip is "
+	@ipconfig getifaddr en0
+	@printf "$(RESET)"
+
+iplinux:
+	@printf "$(GREEN) $(ITALIC) Your adress ip is "
+	@hostname -I
+	@printf "$(RESET)"
+
+meurt:
+	@echo "🦃 🍎 🥓 🧀🐿️"

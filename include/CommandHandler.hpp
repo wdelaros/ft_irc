@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Command.hpp"
-
 #include "../include/Username.hpp"
 #include "../include/Nickname.hpp"
 #include "../include/PrivMsg.hpp"
@@ -14,8 +12,6 @@
 #include "../include/Ping.hpp"
 #include "../include/Pass.hpp"
 #include "../include/List.hpp"
-
-#include <vector>
 
 class CommandHandler {
 	private:

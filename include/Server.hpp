@@ -6,16 +6,13 @@
 #include <cstring>
 
 #include <fcntl.h>
-#include <map>
 #include <netdb.h>
 #include <poll.h>
-#include <string>
 
 #include "Define.hpp"
 
 #include "CommandHandler.hpp"
 #include "Channel.hpp"
-#include "User.hpp"
 
 class Server {
 	private:

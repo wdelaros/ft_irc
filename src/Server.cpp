@@ -1,6 +1,4 @@
 #include "../include/Server.hpp"
-#include <sys/socket.h>
-#include <unistd.h>
 
 extern bool g_stop;
 

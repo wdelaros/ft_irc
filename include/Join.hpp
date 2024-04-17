@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Command.hpp"
-#include <iostream>
-#include <string>
-#include <vector>
 
 class Join: public Command {
 	private:

@@ -17,7 +17,7 @@
 
 
 /* --- Command --- */
-#define RPL_LIST(nickname, list) "322 " + nickname + " " + list + "\r\n"
+#define RPL_LIST(nickname, channel, size, topic) "322 " + nickname + " " + channel + " " +  size + " :" + topic + "\r\n"
 #define RPL_LISTEND(nickname) "323 " + nickname + " :End of /LIST\r\n"
 #define RPL_CHANNELMODEIS(...) /*324*/ GET_MACRO(__VA_ARGS__, RPL_CHANNELMODEIS2, RPL_CHANNELMODEIS1)(__VA_ARGS__)
 #define RPL_NOTOPIC(nickname, channel) "331 " + nickname + " " + channel + " :No topic set" + "\r\n"
@@ -50,4 +50,4 @@
 #define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel + "\r\n"
 #define ERR_INVITEONLYCHAN(channel) "473 '" + channel + "' :Cannot join channel (+i)\r\n"
 #define ERR_BADCHANNELKEY(channel, reason) "475 '" + channel + "' :" + reason + "\r\n"
-#define ERR_CHANOPRIVSNEEDED(channel) "482 '" + channel + "' :You're not channel operator!\r\n"
+#define ERR_CHANOPRIVSNEEDED(channel) "482 " + channel + " :You're not channel operator!\r\n"

@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Command.hpp"
-#include <iostream>
-#include <string>
-#include <vector>
 
 class Kick: public Command {
 	private:

@@ -1,9 +1,5 @@
 #include "../include/PrivMsg.hpp"
 #include "../include/Server.hpp"
-#include <cstddef>
-#include <string>
-#include <sys/socket.h>
-#include <vector>
 
 PrivMsg::PrivMsg(): _name("privmsg") {
 

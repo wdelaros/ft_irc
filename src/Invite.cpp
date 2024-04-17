@@ -1,6 +1,5 @@
 #include "../include/Invite.hpp"
 #include "../include/Server.hpp"
-#include <sys/socket.h>
 
 Invite::Invite(): _name("invite") {
 

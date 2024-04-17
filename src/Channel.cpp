@@ -1,15 +1,11 @@
 #include "../include/Channel.hpp"
 #include "../include/Define.hpp"
-#include <iostream>
-#include <map>
-#include <sys/socket.h>
-#include <utility>
-#include <vector>
 
 Channel::Channel(const std::string& channelName, User* user): _name(channelName) {
 	_user[user] = true;
 	_mode = "t";
 	_key = "";
+	_topic = "";
 	_userCount = 1;
 	_limitUser = -1;
 }
@@ -89,7 +85,6 @@ void Channel::sendUserList(const User* user) {
 		list += it->first->getNickname() + " ";
 	}
 	finalMsg = RPL_NAMREPLY(user->getNickname(), _name, list);
-	std::cout << finalMsg;
 	send(user->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
 	finalMsg = RPL_ENDOFNAMES(user->getNickname(), _name);
 	send(user->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
@@ -117,7 +112,6 @@ void Channel::sendBroadcastUserList() {
 		list += it->first->getNickname() + " ";
 	}
 	finalMsg = RPL_NAMREPLY(_name, list);
-	std::cout << finalMsg;
 	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++) {
 		// std::string tmpMsg = FinalMsg + "366 " + it->first->getNickname() + " " + _name + " :End of /NAMES list" + "\r\n";
 		send(it->first->getFd(), finalMsg.c_str(), finalMsg.size(), 0);

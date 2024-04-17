@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Command.hpp"
-#include <string>
-#include <vector>
 
 class Username: public Command {
 	private:

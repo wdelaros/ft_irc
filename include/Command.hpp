@@ -2,8 +2,8 @@
 
 #include "User.hpp"
 #include <iostream>
+#include <vector>
 #include <map>
-#include <string>
 
 class Server;
 

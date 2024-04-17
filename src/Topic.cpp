@@ -33,13 +33,17 @@ std::string Topic::execute(Server& server, User& eventUser, std::string& buffer)
 			if (vec.size() < 3)
 				channel->sendTopic(&eventUser); //not finish
 			else if (channel->getMode().find("t") != std::string::npos) {
-				if (channel->getIsOp(eventUser))
+				if (channel->getIsOp(eventUser)) {
 					channel->setTopic(vec[2].substr(1));
+					channel->sendBroadcastAll(":" + eventUser.getNickname() + " " + RPL_TOPIC(eventUser.getNickname(), channel->getName(), channel->getTopic()));
+				}
 				else
 					msg = ERR_CHANOPRIVSNEEDED(channel->getName());
 			}
-			else
+			else {
 				channel->setTopic(vec[2].substr(1));
+				channel->sendBroadcastAll(":" + eventUser.getNickname() + " " + RPL_TOPIC(eventUser.getNickname(), channel->getName(), channel->getTopic()));
+			}
 		}
 		else
 			msg = ERR_USERNOTINCHANNEL(eventUser.getNickname(), channel->getName());

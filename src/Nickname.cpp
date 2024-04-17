@@ -1,12 +1,5 @@
 #include "../include/Nickname.hpp"
 #include "../include/Server.hpp"
-#include <cctype>
-#include <cstddef>
-#include <map>
-#include <string>
-#ifdef __apple
-# include <_ctype.h>
-#endif
 
 Nickname::Nickname(): _name("nick") {
 
