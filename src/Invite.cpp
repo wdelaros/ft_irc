@@ -31,7 +31,7 @@ std::string Invite::execute(Server& server, User& eventUser, std::string& buffer
 	if (server.isChannelExist(vec[2])) {
 		Channel *channel = server.getChannel(vec[2]);
 		if (channel->isUserInChannel(eventUser.getNickname())) {
-			if (channel->getMode().find("i") != std::string::npos) {
+			if (channel->getMode('i')) {
 				if (channel->getIsOp(eventUser)) {
 					if (!channel->isUserInChannel(vec[1])) {
 						msg = ":" + eventUser.getNickname() + " INVITE " + vec[1] + " " + vec[2] + "\r\n";

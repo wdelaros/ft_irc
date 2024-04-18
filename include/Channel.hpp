@@ -14,9 +14,9 @@ class Channel {
 		std::string	_name;
 		std::string	_key;
 		std::string	_topic;
-		std::string _mode;
 
 		std::vector<User*> _invite;
+		std::map<char, bool> _mode;
 		std::map<User*, bool> _user;
 
 	public:
@@ -30,14 +30,14 @@ class Channel {
 		const std::string& getKey() const;
 		const std::string& getName() const;
 		const std::string& getTopic() const;
-		const std::string& getMode() const;
+		const bool& getMode(char mode);
 		std::map<User*, bool>& getUserList();
 		std::vector<User*>& getInviteList();
 
 		void setLimitUser(const int& limit);
 		void setKey(const std::string& key);
 		void setTopic(const std::string& topic);
-		void setMode(const std::string& mode);
+		void setMode(const char& mode, bool status);
 
 		void sendMsg(const User& user, const std::string& msg);
 		void sendUserList(const User* user);

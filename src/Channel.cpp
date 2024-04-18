@@ -1,9 +1,14 @@
 #include "../include/Channel.hpp"
 #include "../include/Define.hpp"
+#include <map>
 
 Channel::Channel(const std::string& channelName, User* user): _name(channelName) {
 	_user[user] = true;
-	_mode = "t";
+	_mode['i'] = false;
+	_mode['t'] = true;
+	_mode['k'] = false;
+	_mode['o'] = false;
+	_mode['l'] = false;
 	_key = "";
 	_topic = "";
 	_userCount = 1;
@@ -38,8 +43,8 @@ const std::string& Channel::getTopic() const {
 	return _topic;
 }
 
-const std::string& Channel::getMode() const {
-	return _mode;
+const bool& Channel::getMode(char mode) {
+	return _mode[mode];
 }
 
 std::map<User*, bool>& Channel::getUserList() {
@@ -62,8 +67,8 @@ void Channel::setTopic(const std::string& topic) {
 	_topic = topic;
 }
 
-void Channel::setMode(const std::string& mode) {
-	_mode = mode;
+void Channel::setMode(const char& mode, bool status) {
+	_mode[mode] = status;
 }
 
 void Channel::sendMsg(const User& user, const std::string& msg) {
@@ -120,11 +125,16 @@ void Channel::sendBroadcastUserList() {
 
 void Channel::sendMode(User& user) {
 	std::string msg;
+	std::string mode;
 
-	if (_mode.empty())
+	for (std::map<char, bool>::iterator it; it != _mode.end(); it++)
+		if (it->second == true)
+			mode += it->first;
+
+	if (mode.empty())
 		msg = RPL_CHANNELMODEIS(user.getNickname(), _name);
 	else
-		msg = RPL_CHANNELMODEIS(user.getNickname(), _name, _mode);
+		msg = RPL_CHANNELMODEIS(user.getNickname(), _name, mode);
 	send(user.getFd(), msg.c_str(), msg.size(), 0);
 }
 

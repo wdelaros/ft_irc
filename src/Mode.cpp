@@ -28,7 +28,7 @@ int checkMode(const std::string& mode, const std::string& delimiter) {
 std::string parseMode(Channel* channel, const std::string& mode) {
 	std::string msg;
 
-	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
+	if (channel->getMode('k') && mode.find("k") != std::string::npos) {
 		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}

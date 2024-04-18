@@ -32,7 +32,7 @@ std::string Topic::execute(Server& server, User& eventUser, std::string& buffer)
 		if (channel->isUserInChannel(eventUser.getNickname())) {
 			if (vec.size() < 3)
 				channel->sendTopic(&eventUser); //not finish
-			else if (channel->getMode().find("t") != std::string::npos) {
+			else if (channel->getMode('t')) {
 				if (channel->getIsOp(eventUser)) {
 					channel->setTopic(vec[2].substr(1));
 					channel->sendBroadcastAll(":" + eventUser.getNickname() + " " + RPL_TOPIC(eventUser.getNickname(), channel->getName(), channel->getTopic()));

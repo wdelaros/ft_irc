@@ -106,7 +106,7 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 					send(eventUser.getFd(), msg.c_str(), msg.size(), 0);
 					msg = "";
 				}
-				else if (channel->getMode().find("i") != std::string::npos) {
+				else if (channel->getMode('i')) {
 					if (channel->getKey() == it->second || channel->isUserInInviteList(&eventUser)) {
 						if (!joinChannel(channel, eventUser, it))
 							msg = ERR_CHANNELISFULL(it->first);
@@ -119,7 +119,7 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 						msg = ERR_CHANNELISFULL(it->first);
 				}
 				else {
-					if (channel->getMode().find("k") == std::string::npos)
+					if (!channel->getMode('k'))
 						msg = ERR_BADCHANNELKEY(it->first, ":Wrong password!");
 					else
 						msg = ERR_BADCHANNELKEY(it->first, "Cannot join channel (+k)");
