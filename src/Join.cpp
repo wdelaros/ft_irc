@@ -73,25 +73,29 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 	else if (vec.size() < 4) {
 		if (vec.size() < 3) {
 			if (vec[1][0] == ',' || vec[1][vec[1].length() - 1] == ',')
-				return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (JOIN <channel name>[,<channel name>])");
+				return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Use (JOIN <channel name>[,<channel name>])");
 		}
 		else if (vec.size() < 4) {
 			if (vec[2][0] == ',' || vec[2][vec[2].length() - 1] == ',')
-				return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (JOIN <channel name>[,<channel name>] <key>[,<key>])");
+				return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Use (JOIN <channel name>[,<channel name>] <key>[,<key>])");
 		}
 	}
 	else if (vec.size() > 3)
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
-
-	if (vec[1] == "0") {
-		server.disconnectUserChannel(eventUser);
-		return "";
-	}
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameters");
 
 	if (vec.size() > 2)
 		channelKey = parseChannelKey(tokenize(vec[1], ","), tokenize(vec[2], ","));
 	else
 		channelKey = parseChannelKey(tokenize(vec[1], ","));
+
+	if (channelKey.begin() == channelKey.end())
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many key");
+
+
+	if (vec[1] == "0") {
+		server.disconnectUserChannel(eventUser);
+		return "";
+	}
 
 	for (std::map<std::string, std::string>::iterator it = channelKey.begin(); it != channelKey.end(); it++) {
 		if (std::regex_match(it->first, regex)) {

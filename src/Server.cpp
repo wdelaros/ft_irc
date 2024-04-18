@@ -107,7 +107,7 @@ void Server::disconnectUser(int i, int& fd) {
 	_userCount--;
 }
 
-void Server::disconnectUserChannel(User& user) {
+void Server::disconnectUserChannel(User& user) { // from all channel
 	for (std::map<std::string, Channel*>::iterator it = _listChannel.begin(); it != _listChannel.end(); ) {
 		if (it->second->isUserInChannel(user.getNickname())) {
 			it->second->disconnectUser(&user, "has disconnected!");
