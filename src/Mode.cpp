@@ -28,20 +28,24 @@ int checkMode(const std::string& mode, const std::string& delimiter) {
 std::string parseMode(Channel* channel, const std::string& mode) {
 	std::string msg;
 
-	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
+	if (channel->getMode('i') != std::string::npos && mode.find("i") != std::string::npos) {
+		if (mode.substr(0, mode.find("i")).find_last_of("+") != std::string::npos)
+			msg = ERR_KEYSET(channel->getName());
+	}
+	if (channel->getMode('t') != std::string::npos && mode.find("t") != std::string::npos) {
+		if (mode.substr(0, mode.find("t")).find_last_of("+") != std::string::npos)
+			msg = ERR_KEYSET(channel->getName());
+	}
+	if (channel->getMode('k') != std::string::npos && mode.find("k") != std::string::npos) {
 		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
-	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
-		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
+	if (channel->getMode('o') != std::string::npos && mode.find("o") != std::string::npos) {
+		if (mode.substr(0, mode.find("o")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
-	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
-		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
-			msg = ERR_KEYSET(channel->getName());
-	}
-	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
-		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
+	if (channel->getMode('l') != std::string::npos && mode.find("l") != std::string::npos) {
+		if (mode.substr(0, mode.find("l")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
 	return msg;
@@ -90,12 +94,12 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 std::string invitationMode(Channel* chan, User& eventUser, char modif)
 {
 	std::string msg;
-	if (chan->findMode('i') && modif == '-')
+	if (chan->getMode('i') && modif == '-')
 	{
 		chan->setMode('i', false);
 		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
 	}
-	else if (!chan->findMode('i') && modif == '+')
+	else if (!chan->getMode('i') && modif == '+')
 	{
 		chan->setMode('i', true);
 		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
@@ -109,12 +113,12 @@ std::string invitationMode(Channel* chan, User& eventUser, char modif)
 std::string restrictionTopicMode(Channel* chan, User& eventUser, char modif)
 {
 	std::string msg;
-	if (chan->findMode('t') && modif == '-')
+	if (chan->getMode('t') && modif == '-')
 	{
 		chan->setMode('t', false);
 		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
 	}
-	else if (!chan->findMode('t') && modif == '+')
+	else if (!chan->getMode('t') && modif == '+')
 	{
 		chan->setMode('t', true);
 		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
@@ -128,12 +132,12 @@ std::string restrictionTopicMode(Channel* chan, User& eventUser, char modif)
 std::string passwordMode(Channel* chan, User& eventUser, char modif, std::string passw)
 {
 	std::string msg;
-	if (chan->findMode('k') && modif == '-')
+	if (chan->getMode('k') && modif == '-')
 	{
 		chan->setMode('k', false);
 		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
 	}
-	else if (!chan->findMode('k') && modif == '+')
+	else if (!chan->getMode('k') && modif == '+')
 	{
 		chan->setMode('k', true);
 		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
@@ -147,12 +151,12 @@ std::string passwordMode(Channel* chan, User& eventUser, char modif, std::string
 std::string privilegeMode(Channel* chan, User& eventUser, char modif, std::string targetName)
 {
 	std::string msg;
-	if (chan->findMode('o') && modif == '-')
+	if (chan->getMode('o') && modif == '-')
 	{
 		chan->setMode('o', false);
 		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
 	}
-	else if (!chan->findMode('o') && modif == '+')
+	else if (!chan->getMode('o') && modif == '+')
 	{
 		chan->setMode('o', true);
 		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
@@ -167,12 +171,12 @@ std::string privilegeMode(Channel* chan, User& eventUser, char modif, std::strin
 std::string limitMode(Channel* chan, User& eventUser, char modif, int limit)
 {
 	std::string msg;
-	if (chan->findMode('l') && modif == '-')
+	if (chan->getMode('l') && modif == '-')
 	{
 		chan->setMode('l', false);
 		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
 	}
-	else if (!chan->findMode('l') && modif == '+')
+	else if (!chan->getMode('l') && modif == '+')
 	{
 		chan->setMode('l', true);
 		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
