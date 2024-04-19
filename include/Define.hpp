@@ -2,6 +2,7 @@
 
 #define GET_MACRO(_1,_2,_3,NAME,...) NAME
 
+#define MODE(nickname, channel, modif, mode, param) ":" + nickname + " MODE " + channel + " " + modif + mode + " " + param + "r\n";
 
 /* --- Macros --- */
 #define RPL_CHANNELMODEIS1(nickname, channel) "324 " + nickname + " " + channel + "\r\n"
@@ -9,7 +10,7 @@
 #define RPL_NAMREPLY1(channel, list) "353 = " + channel + " :" + list + "\r\n"
 #define RPL_NAMREPLY2(nickname, channel, list) "353 " + nickname + " = " + channel + " :" + list + "\r\n"
 #define ERR_USERONCHANNEL1(nickname, channel)  "443 " + nickname + " " + channel + " :You're already on that channel!\r\n"
-#define ERR_USERONCHANNEL2(nickname, target, channel)  "443 " + nickname + " " + target + " " + channel + " :is already on that channel!\r\n"
+#define ERR_USERONCHANNEL2(nickname, channel, target)  "443 " + nickname + " " + channel + " " + target + " :is already on that channel!\r\n"
 
 
 /* --- Connection --- */
@@ -22,7 +23,7 @@
 #define RPL_CHANNELMODEIS(...) /*324*/ GET_MACRO(__VA_ARGS__, RPL_CHANNELMODEIS2, RPL_CHANNELMODEIS1)(__VA_ARGS__)
 #define RPL_NOTOPIC(nickname, channel) "331 " + nickname + " " + channel + " :No topic set" + "\r\n"
 #define RPL_TOPIC(nickname, channel, topic)  "332 " + nickname + " " + channel + " :" + topic + "\r\n"
-#define RPL_INVITING(nickname, channel, target) "341 " + nickname + " " + channel + " " + target + "\r\n"
+#define RPL_INVITING(nickname, target, channel) "341 " + nickname + " " + target + " " + channel + "\r\n"
 #define RPL_NAMREPLY(...) /*353*/ GET_MACRO(__VA_ARGS__, RPL_NAMREPLY2, RPL_NAMREPLY1)(__VA_ARGS__)
 #define RPL_ENDOFNAMES(nickname, channel) "366 " + nickname + " " + channel + " :End of /NAMES list" + "\r\n"
 

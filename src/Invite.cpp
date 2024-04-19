@@ -37,10 +37,10 @@ std::string Invite::execute(Server& server, User& eventUser, std::string& buffer
 						msg = ":" + eventUser.getNickname() + " INVITE " + vec[1] + " " + vec[2] + "\r\n";
 						send(server.findNickFd(vec[1]), msg.c_str(), msg.length(), 0);
 						//add to invite list
-						msg = RPL_INVITING(eventUser.getNickname(), vec[2], vec[1]);
+						msg = RPL_INVITING(eventUser.getNickname(), vec[1], vec[2]);
 					}
 					else
-						return ERR_USERONCHANNEL(eventUser.getNickname(), vec[1], vec[2]);
+						return ERR_USERONCHANNEL(eventUser.getNickname(), vec[2], vec[1]);
 				}
 				else
 					return ERR_CHANOPRIVSNEEDED(vec[2]);
@@ -48,11 +48,12 @@ std::string Invite::execute(Server& server, User& eventUser, std::string& buffer
 			else {
 				if (!channel->isUserInChannel(vec[1])) {
 					msg = ":" + eventUser.getNickname() + " INVITE " + vec[1] + " " + vec[2] + "\r\n";
+					//add to invite list
 					send(server.findNickFd(vec[1]), msg.c_str(), msg.length(), 0);
-					msg = RPL_INVITING(eventUser.getNickname(), vec[2], vec[1]);
+					msg = RPL_INVITING(eventUser.getNickname(), vec[1], vec[2]);
 				}
 				else
-					return ERR_USERONCHANNEL(eventUser.getNickname(), vec[1], vec[2]);
+					return ERR_USERONCHANNEL(eventUser.getNickname(), vec[2], vec[1]);
 			}
 		}
 		else
@@ -61,7 +62,7 @@ std::string Invite::execute(Server& server, User& eventUser, std::string& buffer
 	else {
 		msg = ":" + eventUser.getNickname() + " INVITE " + vec[1] + " " + vec[2] + "\r\n";
 		send(server.findNickFd(vec[1]), msg.c_str(), msg.length(), 0);
-		msg = RPL_INVITING(eventUser.getNickname(), vec[2], vec[1]);
+		msg = RPL_INVITING(eventUser.getNickname(), vec[1], vec[2]);
 	}
 	return msg;
 }

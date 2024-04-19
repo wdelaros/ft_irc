@@ -246,7 +246,7 @@ int Server::findNickFd(const std::string& nickname) {
 bool Server::nicknameInUse(const std::string& nickname) {
 	for (int i = 1; i <= _userCount; i++) {
 		int fd = _poll[i].fd;
-		if (!strcasecmp(_listUser[fd]->getNickname().c_str(), nickname.c_str()))
+		if (!strcasecmp(_listUser[fd]->getNickname().c_str(), nickname.c_str()) && _listUser[fd]->getIsAuth())
 			return true;
 	}
 	return false;
