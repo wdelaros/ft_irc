@@ -127,7 +127,7 @@ void Channel::sendMode(User& user) {
 	std::string msg;
 	std::string mode;
 
-	for (std::map<char, bool>::iterator it; it != _mode.end(); it++)
+	for (std::map<char, bool>::iterator it = _mode.begin(); it != _mode.end(); it++)
 		if (it->second == true)
 			mode += it->first;
 
