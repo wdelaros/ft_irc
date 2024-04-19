@@ -2,7 +2,7 @@
 
 #define GET_MACRO(_1,_2,_3,NAME,...) NAME
 
-#define MODE(nickname, channel, modif, mode, param) ":" + nickname + " MODE " + channel + " " + modif + mode + " " + param + "r\n";
+#define MODE(nickname, channel, modif, mode, param) ":" + nickname + " MODE " + channel + " " + modif + mode + " " + param + "\r\n";
 
 /* --- Macros --- */
 #define RPL_CHANNELMODEIS1(nickname, channel) "324 " + nickname + " " + channel + "\r\n"
@@ -14,7 +14,7 @@
 
 
 /* --- Connection --- */
-#define RPL_WELCOME(nickname, username) "001 " + nickname + " You are now register. Welcome on ft_irc " + username + "!\r\n"
+#define RPL_WELCOME(nickname, username) "001 " + nickname + " You are now registered. Welcome on ft_irc " + username + "!\r\n"
 
 
 /* --- Command --- */
@@ -39,16 +39,16 @@
 #define ERR_UNKNOWNCOMMAND(command) "421 '" + command + "' :Unknow command!\r\n"
 #define ERR_NONICKNAMEGIVEN(nickname) "431 " + nickname + " :No nickname given\r\n"
 #define ERR_ERRONEUSNICKNAME(nickname, reason) "432 '" + buffer + "' :" + reason + "\r\n"
-#define ERR_NICKNAMEINUSE(nickname) "433 '" + nickname + "' :Nickname already in use!\r\n"
+#define ERR_NICKNAMEINUSE(nickname) "433 '" + nickname + "' :Nickname is already in use!\r\n"
 #define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " " + channel + " :You're not in this channel!\r\n"
 #define ERR_NOTONCHANNEL(nickname, channel) "442 " + nickname + " " + channel + " :You're not on that channel\r\n"
 #define ERR_USERONCHANNEL(...) /*443*/ GET_MACRO(__VA_ARGS__, ERR_USERONCHANNEL2, ERR_USERONCHANNEL1)(__VA_ARGS__)
 #define ERR_NOTREGISTERED(reason) "451 PRIVMSG " + reason + "\r\n"
 #define ERR_NEEDMOREPARAMS(nickname, command) "461 " + nickname + " " + command + " :Not enough parameters\r\n"
 #define ERR_ALREADYREGISTRED(nickname) "462 " + nickname + " :Unauthorized command (already registered)\r\n"
-#define ERR_KEYSET(channel) "467 " + channel + " :Channel key already set\r\n"
+#define ERR_KEYSET(channel) "467 " + channel + " :Channel key is already set\r\n"
 #define ERR_CHANNELISFULL(channel) "471 '" + channel + "':Cannot join channel (+l)\r\n"
 #define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel + "\r\n"
 #define ERR_INVITEONLYCHAN(channel) "473 '" + channel + "' :Cannot join channel (+i)\r\n"
 #define ERR_BADCHANNELKEY(channel, reason) "475 '" + channel + "' :" + reason + "\r\n"
-#define ERR_CHANOPRIVSNEEDED(channel) "482 " + channel + " :You're not channel operator!\r\n"
+#define ERR_CHANOPRIVSNEEDED(channel) "482 " + channel + " :You're not a channel operator!\r\n"
