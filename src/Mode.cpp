@@ -65,6 +65,8 @@ std::string Mode::restrictionTopicMode(Channel* chan, User& eventUser, char modi
 		chan->setMode('t', true);
 		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 't', "");
 	}
+	else
+		msg = ERR_UNKNOWNERROR(chan->getName(), "MODE", "Topic is already set to " + modif + "t");
 	return (msg);
 }
 
@@ -72,20 +74,20 @@ std::string Mode::restrictionTopicMode(Channel* chan, User& eventUser, char modi
 std::string Mode::passwordMode(Channel* chan, User& eventUser, char modif, std::string passw) const
 {
 	std::string msg;
-	(void)passw;
 	if (chan->getMode('k') && modif == '-')
 	{
 		chan->setMode('k', false);
-		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+		chan->setKey("");
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'k', "");
 	}
 	else if (!chan->getMode('k') && modif == '+')
 	{
 		chan->setMode('k', true);
 		chan->setKey(passw);
-		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'k', "");
 	}
 	else
-		msg = "Error: Channel mode cannot be change to current mode"; // WIP
+		msg = ERR_UNKNOWNERROR(chan->getName(), "MODE", "Channel already has no key");
 	return (msg);
 }
 
@@ -96,16 +98,15 @@ std::string Mode::privilegeMode(Channel* chan, User& eventUser, char modif, std:
 	if (chan->getMode('o') && modif == '-')
 	{
 		chan->setMode('o', false);
-		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', "Removed " + target + " as channel operator in " + chan->getName() + " channel");
 	}
 	else if (!chan->getMode('o') && modif == '+')
 	{
 		chan->setMode('o', true);
-		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', "Added " + target + " as channel operator in " + chan->getName() + " channel");
 	}
 	else
 		msg = "Error: Channel mode cannot be change to current mode"; // WIP
-	(void)target;
 	return (msg);
 }
 
@@ -113,16 +114,17 @@ std::string Mode::privilegeMode(Channel* chan, User& eventUser, char modif, std:
 std::string Mode::limitMode(Channel* chan, User& eventUser, char modif, int limit) const
 {
 	std::string msg;
-	(void)limit;
 	if (chan->getMode('l') && modif == '-')
 	{
 		chan->setMode('l', false);
-		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+		cham->setLimitUser(-1);
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', "Removed user limit in " + chan->getName() + " channel");
 	}
 	else if (!chan->getMode('l') && modif == '+')
 	{
 		chan->setMode('l', true);
-		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+		cham->setLimitUser(limit);
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', "Set user limit to " + limit + " in " + chan->getName() + " channel");
 	}
 	else
 		msg = "Error: Channel mode cannot be change to current mode"; // WIP
