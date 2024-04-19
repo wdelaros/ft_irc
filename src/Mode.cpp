@@ -28,23 +28,23 @@ int checkMode(const std::string& mode, const std::string& delimiter) {
 std::string parseMode(Channel* channel, const std::string& mode) {
 	std::string msg;
 
-	if (channel->getMode('i') != std::string::npos && mode.find("i") != std::string::npos) {
+	if (channel->getMode('i') && mode.find("i") != std::string::npos) {
 		if (mode.substr(0, mode.find("i")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
-	if (channel->getMode('t') != std::string::npos && mode.find("t") != std::string::npos) {
+	if (channel->getMode('t') && mode.find("t") != std::string::npos) {
 		if (mode.substr(0, mode.find("t")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
-	if (channel->getMode('k') != std::string::npos && mode.find("k") != std::string::npos) {
+	if (channel->getMode('k') && mode.find("k") != std::string::npos) {
 		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
-	if (channel->getMode('o') != std::string::npos && mode.find("o") != std::string::npos) {
+	if (channel->getMode('o') && mode.find("o") != std::string::npos) {
 		if (mode.substr(0, mode.find("o")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
-	if (channel->getMode('l') != std::string::npos && mode.find("l") != std::string::npos) {
+	if (channel->getMode('l') && mode.find("l") != std::string::npos) {
 		if (mode.substr(0, mode.find("l")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
@@ -132,6 +132,7 @@ std::string restrictionTopicMode(Channel* chan, User& eventUser, char modif)
 std::string passwordMode(Channel* chan, User& eventUser, char modif, std::string passw)
 {
 	std::string msg;
+	(void)passw;
 	if (chan->getMode('k') && modif == '-')
 	{
 		chan->setMode('k', false);
@@ -171,6 +172,7 @@ std::string privilegeMode(Channel* chan, User& eventUser, char modif, std::strin
 std::string limitMode(Channel* chan, User& eventUser, char modif, int limit)
 {
 	std::string msg;
+	(void)limit;
 	if (chan->getMode('l') && modif == '-')
 	{
 		chan->setMode('l', false);
