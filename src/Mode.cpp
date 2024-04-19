@@ -28,7 +28,19 @@ int checkMode(const std::string& mode, const std::string& delimiter) {
 std::string parseMode(Channel* channel, const std::string& mode) {
 	std::string msg;
 
-	if (channel->getMode('k') && mode.find("k") != std::string::npos) {
+	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
+		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
+			msg = ERR_KEYSET(channel->getName());
+	}
+	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
+		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
+			msg = ERR_KEYSET(channel->getName());
+	}
+	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
+		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
+			msg = ERR_KEYSET(channel->getName());
+	}
+	if (channel->getMode().find("k") != std::string::npos && mode.find("k") != std::string::npos) {
 		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
@@ -75,38 +87,98 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 
 
 //call Invite cmd or add to invite list in channel
-std::string invitationMode()
+std::string invitationMode(Channel* chan, User& eventUser, char modif)
 {
 	std::string msg;
+	if (chan->findMode('i') && modif == '-')
+	{
+		chan->setMode('i', false);
+		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+	}
+	else if (!chan->findMode('i') && modif == '+')
+	{
+		chan->setMode('i', true);
+		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+	}
+	else
+		msg = "Error: Channel mode cannot be change to current mode"; // WIP
 	return (msg);
 }
 
 //(todo: add Operator toggle on topic in channels) toggles topic for ops whenever called
-std::string restrictionMode()
+std::string restrictionTopicMode(Channel* chan, User& eventUser, char modif)
 {
 	std::string msg;
+	if (chan->findMode('t') && modif == '-')
+	{
+		chan->setMode('t', false);
+		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+	}
+	else if (!chan->findMode('t') && modif == '+')
+	{
+		chan->setMode('t', true);
+		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+	}
+	else
+		msg = "Error: Channel mode cannot be change to current mode"; // WIP
 	return (msg);
 }
 
 //adds password to channel, maybe changes if already has password
-std::string passwordMode()
+std::string passwordMode(Channel* chan, User& eventUser, char modif, std::string passw)
 {
 	std::string msg;
+	if (chan->findMode('k') && modif == '-')
+	{
+		chan->setMode('k', false);
+		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+	}
+	else if (!chan->findMode('k') && modif == '+')
+	{
+		chan->setMode('k', true);
+		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+	}
+	else
+		msg = "Error: Channel mode cannot be change to current mode"; // WIP
 	return (msg);
 }
 
 //modifies op privilege to target user
-std::string privilegeMode(std::string targetName)
+std::string privilegeMode(Channel* chan, User& eventUser, char modif, std::string targetName)
 {
 	std::string msg;
+	if (chan->findMode('o') && modif == '-')
+	{
+		chan->setMode('o', false);
+		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+	}
+	else if (!chan->findMode('o') && modif == '+')
+	{
+		chan->setMode('o', true);
+		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+	}
+	else
+		msg = "Error: Channel mode cannot be change to current mode"; // WIP
 	(void)targetName;
 	return (msg);
 }
 
 //modifies limit amount of users for channel
-std::string limitMode()
+std::string limitMode(Channel* chan, User& eventUser, char modif, int limit)
 {
 	std::string msg;
+	if (chan->findMode('l') && modif == '-')
+	{
+		chan->setMode('l', false);
+		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+	}
+	else if (!chan->findMode('l') && modif == '+')
+	{
+		chan->setMode('l', true);
+		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+	}
+	else
+		msg = "Error: Channel mode cannot be change to current mode"; // WIP
 	return (msg);
 }
 
