@@ -231,6 +231,14 @@ std::vector<std::string> tokenize(const std::string& buffer, const std::string& 
 
 /***********************NICKNAME***********************/
 
+bool Server::nickIsAuth(const std::string& nickname) {
+	int fd = findNickFd(nickname);
+	if (fd != -1)
+		if (_listUser[fd]->getIsAuth())
+			return true;
+	return false;
+}
+
 int Server::findNickFd(const std::string& nickname) {
 	int fd;
 	if (!nicknameInUse(nickname))
@@ -246,7 +254,7 @@ int Server::findNickFd(const std::string& nickname) {
 bool Server::nicknameInUse(const std::string& nickname) {
 	for (int i = 1; i <= _userCount; i++) {
 		int fd = _poll[i].fd;
-		if (!strcasecmp(_listUser[fd]->getNickname().c_str(), nickname.c_str()) && _listUser[fd]->getIsAuth())
+		if (!strcasecmp(_listUser[fd]->getNickname().c_str(), nickname.c_str()))
 			return true;
 	}
 	return false;

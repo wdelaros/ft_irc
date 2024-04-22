@@ -28,7 +28,7 @@ std::string PrivMsg::sendChannelMsg(Server& server, User& user, const std::strin
 
 std::string PrivMsg::sendPrivMsg(Server& server, const std::string& msg, const std::string& nickname) const {
 	int fd = server.findNickFd(nickname);
-	if (fd == -1)
+	if (fd == -1 || !server.nickIsAuth(nickname))
 		return ERR_NOSUCHNICK(nickname);
 	send(fd, msg.c_str(), msg.size(), 0);
 	return "";

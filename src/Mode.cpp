@@ -1,5 +1,6 @@
 #include "../include/Mode.hpp"
 #include "../include/Server.hpp"
+#include <string>
 
 Mode::Mode(): _name("mode") {
 
@@ -98,12 +99,12 @@ std::string Mode::privilegeMode(Channel* chan, User& eventUser, char modif, std:
 	if (chan->getMode('o') && modif == '-')
 	{
 		chan->setMode('o', false);
-		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', "Removed " + target + " as channel operator in " + chan->getName() + " channel");
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', target);
 	}
 	else if (!chan->getMode('o') && modif == '+')
 	{
 		chan->setMode('o', true);
-		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', "Added " + target + " as channel operator in " + chan->getName() + " channel");
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', target);
 	}
 	else
 		msg = "Error: Channel mode cannot be change to current mode"; // WIP
@@ -117,14 +118,14 @@ std::string Mode::limitMode(Channel* chan, User& eventUser, char modif, int limi
 	if (chan->getMode('l') && modif == '-')
 	{
 		chan->setMode('l', false);
-		cham->setLimitUser(-1);
-		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', "Removed user limit in " + chan->getName() + " channel");
+		chan->setLimitUser(-1);
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'l', "");
 	}
 	else if (!chan->getMode('l') && modif == '+')
 	{
 		chan->setMode('l', true);
-		cham->setLimitUser(limit);
-		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', "Set user limit to " + limit + " in " + chan->getName() + " channel");
+		chan->setLimitUser(limit);
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'l', std::to_string(limit));
 	}
 	else
 		msg = "Error: Channel mode cannot be change to current mode"; // WIP

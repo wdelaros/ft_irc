@@ -71,6 +71,10 @@ void Channel::setMode(const char& mode, bool status) {
 	_mode[mode] = status;
 }
 
+void Channel::setOp(User &user, bool status) {
+	_user[&user] = status;
+}
+
 void Channel::sendMsg(const User& user, const std::string& msg) {
 	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++) {
 		if (it->first->getFd() != user.getFd())

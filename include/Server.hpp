@@ -51,6 +51,7 @@ class Server {
 
 		/***********************NICKNAME***********************/
 
+		bool nickIsAuth(const std::string& nickname);
 		int findNickFd(const std::string& nickname);
 		bool nicknameInUse(const std::string& nickname);
 

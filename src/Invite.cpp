@@ -25,7 +25,7 @@ std::string Invite::execute(Server& server, User& eventUser, std::string& buffer
 	else if (buffer.find(":") != std::string::npos)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Invalid character");
 
-	if (!server.nicknameInUse(vec[1]))
+	if (!server.nicknameInUse(vec[1]) || !server.nickIsAuth(vec[1]))
 		return ERR_NOSUCHNICK(vec[1]);
 
 	if (server.isChannelExist(vec[2])) {

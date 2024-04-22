@@ -38,6 +38,7 @@ class Channel {
 		void setKey(const std::string& key);
 		void setTopic(const std::string& topic);
 		void setMode(const char& mode, bool status);
+		void setOp(User &user, bool status);
 
 		void sendMsg(const User& user, const std::string& msg);
 		void sendUserList(const User* user);
