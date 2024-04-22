@@ -21,5 +21,5 @@ class Mode: public Command {
 		std::string privilegeMode(Channel* chan, User& eventUser, char modif, std::string target) const;
 		std::string limitMode(Channel* chan, User& eventUser, char modif, int limit) const;
 
-		std::string parseMode(Channel* channel, User& eventUser, const std::string& mode) const;
+		std::string parseMode(Channel* channel, User& eventUser, const std::string& mode, std::string arg) const;
 };
