@@ -31,6 +31,7 @@ class Channel {
 		const std::string& getName() const;
 		const std::string& getTopic() const;
 		const bool& getMode(char mode);
+		User& getUser(std::string nickname);
 		std::map<User*, bool>& getUserList();
 		std::vector<User*>& getInviteList();
 

@@ -55,6 +55,15 @@ std::vector<User*>& Channel::getInviteList() {
 	return _invite;
 }
 
+User& Channel::getUser(std::string nickname) {
+	std::map<User*, bool>::iterator it = _user.begin();
+	for (; it != _user.end(); it++) {
+		if (it->first->getNickname() == nickname)
+			break ;
+	}
+	return *it->first;
+}
+
 void Channel::setLimitUser(const int& limit) {
 	_limitUser = limit;
 }
