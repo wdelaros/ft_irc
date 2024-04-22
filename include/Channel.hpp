@@ -45,6 +45,8 @@ class Channel {
 		void sendTopic(const User* user);
 		void sendBroadcastUserList();
 		void addUser(User* user);
+		void addInvite(User* user);
+		void deleteInvite(User* user);
 
 		void sendBroadcastAll(const std::string& msg);
 		void disconnectUser(User* user, const std::string& msg);

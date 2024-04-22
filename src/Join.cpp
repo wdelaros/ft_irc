@@ -93,7 +93,7 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 
 
 	if (vec[1] == "0") {
-		server.disconnectUserChannel(eventUser);
+		server.disconnectUserFromAllChannel(eventUser);
 		return "";
 	}
 
@@ -107,7 +107,7 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 					msg = "";
 				}
 				else if (channel->getMode('i')) {
-					if (channel->getKey() == it->second || channel->isUserInInviteList(&eventUser)) {
+					if (channel->getKey() == it->second && channel->isUserInInviteList(&eventUser)) {
 						if (!joinChannel(channel, eventUser, it))
 							msg = ERR_CHANNELISFULL(it->first);
 					}

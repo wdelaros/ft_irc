@@ -47,7 +47,7 @@ class Server {
 		void acceptConnection();
 		void userCreation(const int& fd);
 		void disconnectUser(int i, int& fd);
-		void disconnectUserChannel(User& user);
+		void disconnectUserFromAllChannel(User& user);
 
 		/***********************NICKNAME***********************/
 

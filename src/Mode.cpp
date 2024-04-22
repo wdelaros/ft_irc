@@ -40,15 +40,15 @@ std::string Mode::invitationMode(Channel* chan, User& eventUser, char modif) con
 	if (chan->getMode('i') && modif == '-')
 	{
 		chan->setMode('i', false);
-		msg = ":" + eventUser.getNickname() + " removed invitation only mode"; // WIP
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'i', ""); // WIP
 	}
 	else if (!chan->getMode('i') && modif == '+')
 	{
 		chan->setMode('i', true);
-		msg = ":" + eventUser.getNickname() + " added invitation only mode"; // WIP
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'i', ""); // WIP
 	}
 	else
-		msg = "Error: Channel mode cannot be change to current mode"; // WIP
+		msg = ERR_UNKNOWNERROR(chan->getName(), "MODE", "Invite is already set to " + modif + "i"); // WIP
 	return (msg);
 }
 
@@ -135,22 +135,19 @@ std::string Mode::limitMode(Channel* chan, User& eventUser, char modif, int limi
 std::string Mode::parseMode(Channel* channel, User& eventUser, const std::string& mode) const {
 	std::string msg;
 
-	if (channel->getMode('i') && mode.find("i") != std::string::npos) {
-		if (mode.substr(0, mode.find("i")).find_last_of("+") != std::string::npos)
-			msg = ERR_KEYSET(channel->getName());
-	}
-	if (mode.find("t") != std::string::npos) {
+	if (mode.find("i") != std::string::npos)
+			return (invitationMode(channel, eventUser, mode[0]));
+	else if (mode.find("t") != std::string::npos)
 			return (restrictionTopicMode(channel, eventUser, mode[0]));
-	}
-	if (channel->getMode('k') && mode.find("k") != std::string::npos) {
-		if (mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
+	if (mode.find("k") != std::string::npos) {
+		if (channel->getMode('k') && mode.substr(0, mode.find("k")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
-	if (channel->getMode('o') && mode.find("o") != std::string::npos) {
+	if (mode.find("o") != std::string::npos) {
 		if (mode.substr(0, mode.find("o")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}
-	if (channel->getMode('l') && mode.find("l") != std::string::npos) {
+	if (mode.find("l") != std::string::npos) {
 		if (mode.substr(0, mode.find("l")).find_last_of("+") != std::string::npos)
 			msg = ERR_KEYSET(channel->getName());
 	}

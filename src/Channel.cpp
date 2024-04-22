@@ -1,5 +1,6 @@
 #include "../include/Channel.hpp"
 #include "../include/Define.hpp"
+#include <iostream>
 #include <map>
 
 Channel::Channel(const std::string& channelName, User* user): _name(channelName) {
@@ -145,6 +146,24 @@ void Channel::sendMode(User& user) {
 void Channel::addUser(User* user) {
 	_user[user] = false;
 	_userCount++;
+}
+
+void Channel::addInvite(User* user) {
+	for (std::vector<User*>::iterator it = _invite.begin(); it != _invite.end(); it++)
+		if ((*it)->getNickname() == user->getNickname())
+			return ;
+	_invite.push_back(user);
+}
+
+void Channel::deleteInvite(User* user) {
+	for (std::vector<User*>::iterator it = _invite.begin(); it != _invite.end(); it++) {
+		if ((*it)->getNickname() == user->getNickname()) {
+			_invite.erase(it);
+			break ;
+		}
+	}
+	// for (std::vector<User*>::iterator it = _invite.begin(); it != _invite.end(); it++)
+	// 	std::cout << (*it)->getNickname() << std::endl;
 }
 
 void Channel::sendBroadcastAll(const std::string& msg) {
