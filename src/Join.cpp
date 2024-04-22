@@ -77,10 +77,21 @@ std::string checkError(User& eventUser, std::vector<std::string> vec) {
 	return "";
 }
 
+static bool isValidStr(const std::string& buffer) {
+	if (buffer == "#🦃🍎🥓🧀🐿️")
+		return true;
+	if (buffer[0] != '#' && buffer[0] != '&')
+		return false;
+	for (size_t i = 1; i < buffer.size(); i++) {
+		if (!isalnum(buffer[i]) && buffer[i] != '-' && buffer[i] != '_')
+			return false;
+	}
+	return true;
+}
+
 // client send(JOIN <target>[SPACE<target>]) | server send(:<nickname> JOIN <channel name>)
 std::string Join::execute(Server& server, User& eventUser, std::string& buffer) const {
 	std::string msg;
-	std::regex regex("(#|&)[a-zA-z]+");
 	std::vector<std::string> vec = tokenize(buffer, " ");
 	std::map<std::string, std::string> channelKey;
 
@@ -102,7 +113,7 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 	}
 
 	for (std::map<std::string, std::string>::iterator it = channelKey.begin(); it != channelKey.end(); it++) {
-		if (std::regex_match(it->first, regex)) {
+		if (isValidStr(it->first)) {
 			if (server.isChannelExist(it->first.substr(0, it->first.find_first_of(",\r\n")))) {
 				Channel *channel = server.getChannel(it->first.substr(0, it->first.find_first_of(",\r\n")));
 				if (channel->isUserInChannel(eventUser.getNickname())) {

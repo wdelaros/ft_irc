@@ -18,7 +18,7 @@ class Mode: public Command {
 		std::string invitationMode(Channel* chan, User& eventUser, char modif) const;
 		std::string restrictionTopicMode(Channel* chan, User& eventUser, char modif) const;
 		std::string passwordMode(Channel* chan, User& eventUser, char modif, std::string passw) const;
-		std::string privilegeMode(Channel* chan, User& eventUser, char modif, std::string target) const;
+		std::string privilegeMode(Channel* chan, User& eventUser, char modif, User& target) const;
 		std::string limitMode(Channel* chan, User& eventUser, char modif, int limit) const;
 
 		std::string parseMode(Channel* channel, User& eventUser, const std::string& mode, std::string arg) const;

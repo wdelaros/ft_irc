@@ -109,4 +109,4 @@ iplinux:
 	@printf "$(RESET)"
 
 meurt:
-	@echo "🦃 🍎 🥓 🧀🐿️"
+	@echo "🦃🍎🥓🧀🐿️"

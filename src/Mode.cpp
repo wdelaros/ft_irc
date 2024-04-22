@@ -79,31 +79,35 @@ std::string Mode::passwordMode(Channel* chan, User& eventUser, char modif, std::
 	std::string msg;
 	if (chan->getMode('k') && modif == '-')
 	{
-		chan->setMode('k', false);
-		chan->setKey("");
-		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'k', "");
+		if (chan->getKey() == passw)
+		{
+			chan->setMode('k', false);
+			chan->setKey("");
+		}
+		else
+			return (ERR_UNKNOWNERROR(eventUser.getNickname(), "MODE", "Given key does not match current key"));
 	}
 	else if (!chan->getMode('k') && modif == '+')
 	{
 		chan->setMode('k', true);
 		chan->setKey(passw);
-		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'k', "");
 	}
 	else
 		return (ERR_UNKNOWNERROR(chan->getName(), "MODE", "Channel already has no key"));
+	msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'k', "");
 	chan->sendBroadcastAll(msg);
 	return ("");
 }
 
 //modifies op privilege to target user
-std::string Mode::privilegeMode(Channel* chan, User& eventUser, char modif, std::string target) const
+std::string Mode::privilegeMode(Channel* chan, User& eventUser, char modif, User& target) const
 {
 	std::string msg;
 	if (modif == '-')
-		chan->setOp(eventUser, false); // WIP
+		chan->setOp(target, false);
 	else if (modif == '+')
-		chan->setOp(eventUser, true);  //WIP
-	msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', target);
+		chan->setOp(target, true);
+	msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'o', target.getNickname());
 	chan->sendBroadcastAll(msg);
 	return ("");
 }
@@ -115,7 +119,7 @@ std::string Mode::limitMode(Channel* chan, User& eventUser, char modif, int limi
 	if (modif == '-')
 		chan->setMode('l', false);
 	else if (chan->getUserCount() > limit)
-		return (ERR_UNKNOWNERROR(eventUser.getNickname(), "MODE", "number of users in channel exceeds the limit set"));
+		return (ERR_UNKNOWNERROR(eventUser.getNickname(), "MODE", "Number of users in channel exceeds the limit set"));
 	else if (modif == '+')
 		chan->setMode('l', true);
 	chan->setLimitUser(limit);
@@ -138,7 +142,10 @@ std::string Mode::parseMode(Channel* channel, User& eventUser, const std::string
 			return (passwordMode(channel, eventUser, mode[0], arg));
 	}
 	if (mode.find("o") != std::string::npos) {
-		return (privilegeMode(channel, eventUser, mode[0], arg));
+		if (channel->isUserInChannel(arg))
+			return (privilegeMode(channel, eventUser, mode[0], channel->getUser(arg)));
+		else
+			msg = ERR_USERNOTINCHANNEL(eventUser.getNickname(), channel->getName(), arg);
 	}
 	if (mode.find("l") != std::string::npos) {
 		try
@@ -168,12 +175,19 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 				if (channel->getUserList()[&eventUser]) {
 					if (checkMode(vec[2], "itkol"))
 					{
-						if (checkMode(vec[2], "it"))
-							msg = parseMode(channel, eventUser, vec[2], "");
-						else if (checkMode(vec[2], "kol") && vec.size() == 4)
+						if (vec.size() == 3 && checkMode(vec[2], "til"))
+						{
+							if (checkMode(vec[2], "it"))
+								msg = parseMode(channel, eventUser, vec[2], "");
+							else if (vec[2] == "-l")
+								msg = parseMode(channel, eventUser, vec[2], "-1");
+							else
+								msg = ERR_UNKNOWNERROR(eventUser.getNickname(), "MODE", "Invalid amount of argument");
+						}
+						else if (vec.size() == 4 && checkMode(vec[2], "kol"))
 							msg = parseMode(channel, eventUser, vec[2], vec[3]);
-						else if (vec[2] == "-l" && vec.size() == 3)
-							msg = parseMode(channel, eventUser, vec[2], "-1");
+						else
+							msg = ERR_UNKNOWNERROR(eventUser.getNickname(), "MODE", "Invalid amount of argument");
 					}
 					else
 						msg = ERR_UNKNOWNMODE(vec[2], vec[1]);
