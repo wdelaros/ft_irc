@@ -22,7 +22,7 @@ std::string Invite::execute(Server& server, User& eventUser, std::string& buffer
 		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), buffer);
 	else if (vec.size() > 3)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
-	else if (buffer.find(":") != std::string::npos)
+	else if (buffer.find_first_of(":,") != std::string::npos)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Invalid character");
 
 	if (!server.nicknameInUse(vec[1]) || !server.nickIsAuth(vec[1]))
@@ -57,7 +57,7 @@ std::string Invite::execute(Server& server, User& eventUser, std::string& buffer
 			}
 		}
 		else
-			return ERR_USERNOTINCHANNEL(eventUser.getNickname(), vec[2]);
+			return ERR_NOTONCHANNEL(eventUser.getNickname(), vec[2]);
 	}
 	else {
 		msg = ":" + eventUser.getNickname() + " INVITE " + vec[1] + " " + vec[2] + "\r\n";

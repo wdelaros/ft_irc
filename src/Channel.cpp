@@ -1,6 +1,5 @@
 #include "../include/Channel.hpp"
 #include "../include/Define.hpp"
-#include <iostream>
 #include <map>
 
 Channel::Channel(const std::string& channelName, User* user): _name(channelName) {

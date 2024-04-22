@@ -169,7 +169,7 @@ const std::string Server::Auth(std::string& buffer, User &eventUser) {
 
 	if (!eventUser.getHavePass()) {
 		if (!buffer.compare(0, 5, "PASS "))
-			_cmdHandler.getCmd()->execute(*this, eventUser, buffer);
+			msg = _cmdHandler.getCmd()->execute(*this, eventUser, buffer);
 		else
 			msg = ERR_NOTREGISTERED((std::string)"Password required! Use /set irc.server.<server_name>.password <password>!");
 	}

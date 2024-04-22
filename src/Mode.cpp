@@ -179,7 +179,7 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 				channel->sendMode(eventUser);
 		}
 		else
-			msg = ERR_USERNOTINCHANNEL(eventUser.getNickname(), channel->getName());
+			msg = ERR_NOTONCHANNEL(eventUser.getNickname(), channel->getName());
 	}
 	else
 		msg = ERR_NOSUCHCHANNEL(vec[1]);

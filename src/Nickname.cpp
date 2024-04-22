@@ -49,7 +49,8 @@ std::string Nickname::execute(Server& server, User& eventUser, std::string& buff
 	else {
 		msg = ":" + eventUser.getNickname() + " NICK :" + vec[1] + "\r\n";
 		for (std::map<int, User*>::const_iterator it = server.getUserList().begin(); it != server.getUserList().end(); it++)
-			send(it->second->getFd(), msg.c_str(), msg.size(), 0);
+			if (it->second->getIsAuth())
+				send(it->second->getFd(), msg.c_str(), msg.size(), 0);
 		msg = "";
 		eventUser.setNickname(vec[1]);
 	}

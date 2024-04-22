@@ -1,8 +1,6 @@
 #include "../include/Join.hpp"
 #include "../include/Server.hpp"
-#include <algorithm>
 #include <regex>
-#include <variant>
 
 Join::Join(): _name("join") {
 
@@ -61,13 +59,7 @@ bool joinChannel(Channel* channel, User& eventUser, std::map<std::string, std::s
 	return false;
 }
 
-// client send(JOIN <target>[SPACE<target>]) | server send(:<nickname> JOIN <channel name>)
-std::string Join::execute(Server& server, User& eventUser, std::string& buffer) const {
-	std::string msg;
-	std::regex regex("(#|&)[a-zA-z]+");
-	std::vector<std::string> vec = tokenize(buffer, " ");
-	std::map<std::string, std::string> channelKey;
-
+std::string checkError(User& eventUser, std::vector<std::string> vec) {
 	if (vec.size() < 2)
 		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
 	else if (vec.size() < 4) {
@@ -82,6 +74,19 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 	}
 	else if (vec.size() > 3)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameters");
+	return "";
+}
+
+// client send(JOIN <target>[SPACE<target>]) | server send(:<nickname> JOIN <channel name>)
+std::string Join::execute(Server& server, User& eventUser, std::string& buffer) const {
+	std::string msg;
+	std::regex regex("(#|&)[a-zA-z]+");
+	std::vector<std::string> vec = tokenize(buffer, " ");
+	std::map<std::string, std::string> channelKey;
+
+	msg = checkError(eventUser, vec);
+	if (!msg.empty())
+		return msg;
 
 	if (vec.size() > 2)
 		channelKey = parseChannelKey(tokenize(vec[1], ","), tokenize(vec[2], ","));
@@ -90,7 +95,6 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 
 	if (channelKey.begin() == channelKey.end())
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many key");
-
 
 	if (vec[1] == "0") {
 		server.disconnectUserFromAllChannel(eventUser);

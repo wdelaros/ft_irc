@@ -24,8 +24,10 @@ std::string Pass::execute(Server& server, User& eventUser, std::string& buffer) 
 		return ERR_ALREADYREGISTRED(eventUser.getNickname());
 	else if (eventUser.getHavePass())
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Password already given");
-	if (buffer == "PASS " + server.getPassword())
+	if (buffer == "PASS " + server.getPassword()) {
 		eventUser.setHavePass(true);
+		std::cout << "Password accepted!" << std::endl;
+	}
 	else
 		msg = ERR_NOTREGISTERED((std::string)"Wrong password, use /set irc.server.<server_name>.password <password>!");
 	return msg;

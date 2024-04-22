@@ -40,7 +40,7 @@
 #define ERR_NONICKNAMEGIVEN(nickname) "431 " + nickname + " :No nickname given\r\n"
 #define ERR_ERRONEUSNICKNAME(nickname, reason) "432 '" + buffer + "' :" + reason + "\r\n"
 #define ERR_NICKNAMEINUSE(nickname) "433 '" + nickname + "' :Nickname is already in use!\r\n"
-#define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " " + channel + " :You're not in this channel!\r\n"
+#define ERR_USERNOTINCHANNEL(nickname, channel, target) "441 " + nickname + " " + channel + " :" + target + " is not on that channel!\r\n"
 #define ERR_NOTONCHANNEL(nickname, channel) "442 " + nickname + " " + channel + " :You're not on that channel\r\n"
 #define ERR_USERONCHANNEL(...) /*443*/ GET_MACRO(__VA_ARGS__, ERR_USERONCHANNEL2, ERR_USERONCHANNEL1)(__VA_ARGS__)
 #define ERR_NOTREGISTERED(reason) "451 PRIVMSG " + reason + "\r\n"
