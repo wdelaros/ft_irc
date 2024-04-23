@@ -185,6 +185,12 @@ void Channel::disconnectUser(User* user, const std::string& msg) {
 	_userCount--;
 }
 
+void Channel::KickUser(User* user, User* victim, const std::string& msg) {
+	sendBroadcastAll(":" + user->getNickname() + " KICK " + _name + " " + victim->getNickname() + " :" + msg + "\r\n");
+	_user.erase(victim);
+	_userCount--;
+}
+
 bool Channel::isUserInChannel(const std::string& nickname) {
 	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++)
 		if (it->first->getNickname() == nickname)

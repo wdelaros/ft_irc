@@ -20,13 +20,20 @@ std::string Kick::execute(Server& server, User& eventUser, std::string& buffer) 
 
 	if (vec.size() < 3)
 		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
+	else if (vec.size() > 4)
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameter");
 	
 	if (server.isChannelExist(vec[1])) {
 		Channel* channel = server.getChannel(vec[1]);
 		if (channel->isUserInChannel(eventUser.getNickname())) {
 			if (channel->getIsOp(eventUser)) {
 				if (channel->isUserInChannel(vec[2])) {
-
+					if (vec.size() == 4)
+						channel->KickUser(&eventUser, &channel->getUser(vec[2]), vec[3]);
+					else
+						channel->KickUser(&eventUser, &channel->getUser(vec[2]), "has been kick");
+					if (!channel->getUserCount())
+						server.deleteChannel(channel->getName());
 				}
 				else
 					return ERR_USERNOTINCHANNEL(eventUser.getNickname(), channel->getName(), vec[2]);

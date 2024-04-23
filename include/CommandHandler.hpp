@@ -5,7 +5,7 @@
 #include "../include/PrivMsg.hpp"
 #include "../include/Invite.hpp"
 #include "../include/Topic.hpp"
-// #include "../include/Kick.hpp"
+#include "../include/Kick.hpp"
 #include "../include/Part.hpp"
 #include "../include/Mode.hpp"
 #include "../include/Join.hpp"

@@ -51,6 +51,7 @@ class Channel {
 
 		void sendBroadcastAll(const std::string& msg);
 		void disconnectUser(User* user, const std::string& msg);
+		void KickUser(User* user, User* victim, const std::string& msg);
 
 		bool isUserInChannel(const std::string& nickname);
 		bool isUserInInviteList(User* user);

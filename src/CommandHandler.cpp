@@ -7,13 +7,13 @@ CommandHandler::CommandHandler() {
 	_cmdList["MODE"] = new Mode;
 	_cmdList["PART"] = new Part;
 	_cmdList["LIST"] = new List;
+	_cmdList["KICK"] = new Kick;
 	_cmdList["TOPIC"] = new Topic;
 	_cmdList["NICK"] = new Nickname;
 	_cmdList["USER"] = new Username;
 	_cmdList["INVITE"] = new Invite;
 	_cmdList["PRIVMSG"] = new PrivMsg;
 }
-// _cmdList["KICK"] = new Kick;
 
 CommandHandler::~CommandHandler() {
 	for (std::map<std::string, Command*>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)
