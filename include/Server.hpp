@@ -22,7 +22,6 @@ class Server {
 		std::vector<pollfd>		_poll;
 		std::map<int, User*>	_listUser;
 		std::map<std::string, Channel*>	_listChannel;
-		// std::map<std::string, std::map<Channel*, bool>>	_listChannel;
 
 		struct sockaddr_in		_address;
 

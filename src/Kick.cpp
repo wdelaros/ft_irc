@@ -20,6 +20,8 @@ std::string Kick::execute(Server& server, User& eventUser, std::string& buffer) 
 
 	if (vec.size() < 3)
 		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
+	else if (vec.size() == 4 && vec[3][0] != ':')
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Use (KICK <channel> <victim> :<message>) or (KICK <channel> <victim>)");
 	else if (vec.size() > 4)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameter");
 	

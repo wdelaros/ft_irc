@@ -2,17 +2,13 @@
 
 User::User() {
 	_fd = -1;
-	_op = false;
 	_register[0] = false;
 	_register[1] = false;
-	_msg = "";
 	_nickname = "user";
 	_username = "user";
 }
 
 User::User(std::string username, std::string nickname, int fd): _fd(fd), _nickname(nickname), _username(username) {
-	_msg = "";
-	_op = false;
 	_register[0] = false;
 	_register[1] = false;
 }
@@ -25,20 +21,12 @@ const int& User::getFd() const {
 	return _fd;
 }
 
-const bool& User::getIsOp() const {
-	return _op;
-}
-
 const bool& User::getIsAuth() const {
 	return _register[0];
 }
 
 const bool& User::getHavePass() const {
 	return _register[1];
-}
-
-const std::string& User::getMsg() const {
-	return _msg;
 }
 
 const std::string& User::getUsername() const {
@@ -53,20 +41,12 @@ void User::setFd(const int& fd) {
 	_fd = fd;
 }
 
-void User::setOp(const bool& op) {
-	_op = op;
-}
-
 void User::setIsAuth(const bool& auth) {
 	_register[0] = auth;
 }
 
 void User::setHavePass(const bool& pass) {
 	_register[1] = pass;
-}
-
-void User::setMsg(const std::string& msg) {
-	_msg = msg;
 }
 
 void User::setUsername(const std::string& username) {

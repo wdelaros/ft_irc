@@ -44,9 +44,9 @@ std::string PrivMsg::execute(Server& server, User& eventUser, std::string& buffe
 	else if (vec.size() == 2)
 		return ERR_NOTEXTTOSEND(eventUser.getNickname(), "No text to send!");
 	else if (vec.size() > 3)
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameters");
 	else if (vec.size() > 2 && vec[2][0] != ':')
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (PRIVMSG <target> :<message>)");
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Use (PRIVMSG <target> :<message>)");
 
 	std::string target = vec[1];
 	msg = ":" + eventUser.getNickname() + " PRIVMSG " + target + " " + vec[2] + "\r\n";
@@ -55,6 +55,3 @@ std::string PrivMsg::execute(Server& server, User& eventUser, std::string& buffe
 	else
 		return sendPrivMsg(server, msg, target);
 }
-
-// for (size_t i = 0; i < vec.size(); i++)
-// 	std::cout << vec[i] << std::endl;

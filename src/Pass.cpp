@@ -23,7 +23,7 @@ std::string Pass::execute(Server& server, User& eventUser, std::string& buffer) 
 	if (eventUser.getIsAuth())
 		return ERR_ALREADYREGISTRED(eventUser.getNickname());
 	else if (eventUser.getHavePass())
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Password already given");
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Password already given");
 	if (buffer == "PASS " + server.getPassword()) {
 		eventUser.setHavePass(true);
 		std::cout << "Password accepted!" << std::endl;

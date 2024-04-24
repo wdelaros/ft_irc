@@ -1,6 +1,5 @@
 #include "../include/Join.hpp"
 #include "../include/Server.hpp"
-#include <regex>
 
 Join::Join(): _name("join") {
 
@@ -27,6 +26,9 @@ void Join::CreateChannel(Server& server, User& eventUser, const std::string& cha
 std::map<std::string, std::string> parseChannelKey(std::vector<std::string> channel, std::vector<std::string> key) {
 	std::map<std::string, std::string> channelKey;
 
+	if (channel.size() < key.size())
+		return channelKey;
+
 	for (size_t i = 0; i < channel.size(); i++) {
 		if (i < key.size())
 			channelKey.insert(std::pair<std::string, std::string>(channel[i], key[i]));
@@ -46,7 +48,7 @@ std::map<std::string, std::string> parseChannelKey(std::vector<std::string> chan
 
 bool joinChannel(Channel* channel, User& eventUser, std::map<std::string, std::string>::iterator it) {
 	std::string msg;
-	if (channel->getLimitUser() < channel->getUserCount() || channel->getLimitUser() == -1) {
+	if (channel->getLimitUser() > channel->getUserCount() || channel->getLimitUser() == -1) {
 		channel->addUser(&eventUser);
 		msg = ":" + eventUser.getNickname() + " JOIN " + it->first + "\r\n";
 		channel->sendBroadcastAll(msg);
@@ -57,6 +59,18 @@ bool joinChannel(Channel* channel, User& eventUser, std::map<std::string, std::s
 		return true;
 	}
 	return false;
+}
+
+static bool isValidStr(const std::string& buffer) {
+	if (buffer == "#🦃🍎🥓🧀🐿️")
+		return true;
+	if (buffer[0] != '#' && buffer[0] != '&')
+		return false;
+	for (size_t i = 1; i < buffer.size(); i++) {
+		if (!isalnum(buffer[i]) && buffer[i] != '-' && buffer[i] != '_')
+			return false;
+	}
+	return true;
 }
 
 std::string checkError(User& eventUser, std::vector<std::string> vec) {
@@ -75,18 +89,6 @@ std::string checkError(User& eventUser, std::vector<std::string> vec) {
 	else if (vec.size() > 3)
 		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameters");
 	return "";
-}
-
-static bool isValidStr(const std::string& buffer) {
-	if (buffer == "#🦃🍎🥓🧀🐿️")
-		return true;
-	if (buffer[0] != '#' && buffer[0] != '&')
-		return false;
-	for (size_t i = 1; i < buffer.size(); i++) {
-		if (!isalnum(buffer[i]) && buffer[i] != '-' && buffer[i] != '_')
-			return false;
-	}
-	return true;
 }
 
 // client send(JOIN <target>[SPACE<target>]) | server send(:<nickname> JOIN <channel name>)
@@ -152,13 +154,6 @@ std::string Join::execute(Server& server, User& eventUser, std::string& buffer) 
 	}
 	return msg;
 }
-
-// vector			loop channel and loop key
-// std::map<std::string, std::string> function(std::vector<std::string> channel = tokenize(vec[1]))
-// std::map<std::string, std::string> function(std::vector<std::string> channel = tokenize(vec[1]), std::vector<std::string> key = tokenize(vec[2]))
-// <channel, key>
-// if !vec[2] || !vec[2][i]
-// 	<channel, "">
 
 // /nick <nick>
 // <nick>		::= <letter>{<letter>|<number>|<special>}

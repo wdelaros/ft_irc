@@ -1,6 +1,5 @@
 #include "../include/Mode.hpp"
 #include "../include/Server.hpp"
-#include <string>
 
 Mode::Mode(): _name("mode") {
 
@@ -123,7 +122,7 @@ std::string Mode::limitMode(Channel* chan, User& eventUser, char modif, int limi
 	else if (modif == '+')
 		chan->setMode('l', true);
 	chan->setLimitUser(limit);
-	msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'l', std::to_string(limit));
+	msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'l', "");
 	chan->sendBroadcastAll(msg);
 	return ("");
 }
@@ -167,6 +166,8 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 
 	if (vec.size() < 2)
 		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
+	else if (vec.size() > 4)
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameter");
 
 	if (server.isChannelExist(vec[1])) {
 		Channel* channel = server.getChannel(vec[1]);

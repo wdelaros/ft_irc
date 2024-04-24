@@ -19,12 +19,12 @@ std::string Part::execute(Server& server, User& eventUser, std::string& buffer) 
 	std::vector<std::string> vec = tokenize(buffer, " ");
 
 	if (vec.size() < 2)
-		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), buffer);
+		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
 	if (vec.size() > 2) {
 		if (vec[2][0] != ':')
-			return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (PART <channel> :<message>) or (PART <channel>)");
+			return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Use (PART <channel> :<message>) or (PART <channel>)");
 		if (vec.size() > 3)
-			return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+			return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameters");
 	}
 
 	if (server.isChannelExist(vec[1])) {

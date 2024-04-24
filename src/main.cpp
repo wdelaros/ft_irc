@@ -1,8 +1,6 @@
 #include "../include/Server.hpp"
 #include <csignal>
 #include <exception>
-#include <iostream>
-
 
 bool g_stop = false;
 

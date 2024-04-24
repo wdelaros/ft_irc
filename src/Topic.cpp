@@ -19,19 +19,17 @@ std::string Topic::execute(Server& server, User& eventUser, std::string& buffer)
 	std::vector<std::string> vec = tokenize(buffer, " ");
 
 	if (vec.size() < 2)
-		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), buffer);
-	else if (vec.size() == 3) {
-		if (vec[2][0] != ':')
-			return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (TOPIC <channel> :<topic>)");
-	}
+		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
+	else if (vec.size() == 3 && vec[2][0] != ':')
+			return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Use (TOPIC <channel> :<topic>)");
 	else if (vec.size() > 3)
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Use (TOPIC <channel> :<topic>)");
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Use (TOPIC <channel> :<topic>)");
 
 	if (server.isChannelExist(vec[1])) {
 		Channel* channel = server.getChannel(vec[1]);
 		if (channel->isUserInChannel(eventUser.getNickname())) {
 			if (vec.size() < 3)
-				channel->sendTopic(&eventUser); //not finish
+				channel->sendTopic(&eventUser);
 			else if (channel->getMode('t')) {
 				if (channel->getIsOp(eventUser)) {
 					channel->setTopic(vec[2].substr(1));

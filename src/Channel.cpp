@@ -1,13 +1,11 @@
 #include "../include/Channel.hpp"
 #include "../include/Define.hpp"
-#include <map>
 
 Channel::Channel(const std::string& channelName, User* user): _name(channelName) {
 	_user[user] = true;
 	_mode['i'] = false;
 	_mode['t'] = true;
 	_mode['k'] = false;
-	_mode['o'] = false;
 	_mode['l'] = false;
 	_key = "";
 	_topic = "";
@@ -96,9 +94,7 @@ void Channel::sendUserList(const User* user) {
 	std::string finalMsg;
 
 	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++) {
-		if (it->first->getIsOp())
-			list += "+";
-		else if (it->second)
+		if (it->second)
 			list += "@";
 		list += it->first->getNickname() + " ";
 	}
@@ -123,17 +119,13 @@ void Channel::sendBroadcastUserList() {
 	std::string finalMsg;
 
 	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++) {
-		if (it->first->getIsOp())
-			list += "+";
-		else if (it->second)
+		if (it->second)
 			list += "@";
 		list += it->first->getNickname() + " ";
 	}
 	finalMsg = RPL_NAMREPLY(_name, list);
-	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++) {
-		// std::string tmpMsg = FinalMsg + "366 " + it->first->getNickname() + " " + _name + " :End of /NAMES list" + "\r\n";
+	for (std::map<User*, bool>::iterator it = _user.begin(); it != _user.end(); it++)
 		send(it->first->getFd(), finalMsg.c_str(), finalMsg.size(), 0);
-	}
 }
 
 void Channel::sendMode(User& user) {
@@ -170,8 +162,6 @@ void Channel::deleteInvite(User* user) {
 			break ;
 		}
 	}
-	// for (std::vector<User*>::iterator it = _invite.begin(); it != _invite.end(); it++)
-	// 	std::cout << (*it)->getNickname() << std::endl;
 }
 
 void Channel::sendBroadcastAll(const std::string& msg) {

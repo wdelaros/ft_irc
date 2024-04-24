@@ -19,11 +19,11 @@ std::string Invite::execute(Server& server, User& eventUser, std::string& buffer
 	std::vector<std::string> vec = tokenize(buffer, " ");
 
 	if (vec.size() < 3)
-		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), buffer);
+		return ERR_NEEDMOREPARAMS(eventUser.getNickname(), vec[0]);
 	else if (vec.size() > 3)
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameters");
 	else if (buffer.find_first_of(":,") != std::string::npos)
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Invalid character");
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Invalid character");
 
 	if (!server.nicknameInUse(vec[1]) || !server.nickIsAuth(vec[1]))
 		return ERR_NOSUCHNICK(vec[1]);

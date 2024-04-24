@@ -35,21 +35,21 @@ RM			=	rm -rf
 SRCS		=	main.cpp \
 				Server.cpp \
 				User.cpp \
-				Command.cpp \
 				CommandHandler.cpp \
-				Ping.cpp \
-				PrivMsg.cpp \
+				Command.cpp \
+				Pass.cpp \
 				Nickname.cpp \
 				Username.cpp \
-				Pass.cpp \
-				Join.cpp \
+				Ping.cpp \
 				Channel.cpp \
+				PrivMsg.cpp \
+				Join.cpp \
 				Mode.cpp \
-				Part.cpp \
 				Topic.cpp \
+				Part.cpp \
+				Kick.cpp \
 				Invite.cpp \
 				List.cpp \
-				Kick.cpp \
 
 OBJS_DIR	=	obj/
 OBJS_LST	=	$(patsubst %.cpp, %.o, $(SRCS))

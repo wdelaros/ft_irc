@@ -18,8 +18,7 @@ std::string List::execute(Server& server, User& eventUser, std::string& buffer) 
 	std::string msg;
 	std::string count;
 	std::vector<std::string> vec = tokenize(buffer, " ");
-	buffer = buffer.substr(buffer.find_first_of(" \r\n") + 1);
-	
+
 	for (std::map<std::string, Channel*>::const_iterator it = server.getChannelList().begin(); it != server.getChannelList().end(); it ++) {
 		if (it->second->getTopic().empty())
 			msg = RPL_LIST(eventUser.getNickname(), it->second->getName(), std::to_string(it->second->getUserCount()), "No topic set");

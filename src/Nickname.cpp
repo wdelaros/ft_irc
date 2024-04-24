@@ -32,11 +32,13 @@ std::string Nickname::execute(Server& server, User& eventUser, std::string& buff
 
 	if (vec.size() < 2) {
 		msg = ERR_NONICKNAMEGIVEN(eventUser.getNickname());
-		if (!eventUser.getIsAuth())
+		if (!eventUser.getIsAuth() && eventUser.getNickname().empty())
 			return msg + ERR_NOTREGISTERED((std::string)"You are not registered. Give a nickname (NICK <nickname>).");
+		else
+			return msg + ERR_NOTREGISTERED((std::string)"You are not registered.  Give a username (USER <username> 0 * :<realname>).");
 	}
 	else if (vec.size() > 2)
-		return ERR_UNKNOWNERROR(eventUser.getNickname(), buffer, "Too many parameters");
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Too many parameters");
 
 	if (vec[1].length() > 9)
 		msg = ERR_ERRONEUSNICKNAME(vec[1], "Nickname too long!");

@@ -47,7 +47,7 @@
 #define ERR_NEEDMOREPARAMS(nickname, command) "461 " + nickname + " " + command + " :Not enough parameters\r\n"
 #define ERR_ALREADYREGISTRED(nickname) "462 " + nickname + " :Unauthorized command (already registered)\r\n"
 #define ERR_KEYSET(channel) "467 " + channel + " :Channel key is already set\r\n"
-#define ERR_CHANNELISFULL(channel) "471 '" + channel + "':Cannot join channel (+l)\r\n"
+#define ERR_CHANNELISFULL(channel) "471 '" + channel + "' :Cannot join channel (+l)\r\n"
 #define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel + "\r\n"
 #define ERR_INVITEONLYCHAN(channel) "473 '" + channel + "' :Cannot join channel (+i)\r\n"
 #define ERR_BADCHANNELKEY(channel, reason) "475 '" + channel + "' :" + reason + "\r\n"
