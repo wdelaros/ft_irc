@@ -6,11 +6,13 @@ User::User() {
 	_register[1] = false;
 	_nickname = "user";
 	_username = "user";
+	_msg = "";
 }
 
 User::User(std::string username, std::string nickname, int fd): _fd(fd), _nickname(nickname), _username(username) {
 	_register[0] = false;
 	_register[1] = false;
+	_msg = "";
 }
 
 User::~User() {
@@ -37,6 +39,10 @@ const std::string& User::getNickname() const {
 	return _nickname;
 }
 
+const std::string& User::getMsg() const {
+	return _msg;
+}
+
 void User::setFd(const int& fd) {
 	_fd = fd;
 }
@@ -59,3 +65,10 @@ void User::setNickname(const std::string& nickname) {
 		_nickname = nickname;
 }
 
+void User::setMsg(const std::string& msg) {
+		_msg += msg;
+}
+
+void User::clearMsg() {
+	_msg = "";
+}

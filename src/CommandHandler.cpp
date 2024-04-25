@@ -47,20 +47,20 @@ std::string CommandHandler::parseCmdName(const std::string& cmd) {
 		return cmd.substr(0, pos);
 }
 
-void CommandHandler::parseBuffer(const std::string& buffer) {
+void CommandHandler::parseBuffer(User& user) {
 	size_t startPos = 0;
 	size_t endPos = 0;
 
-	for (size_t i = 0; i < buffer.size();i++) {
-		if ((buffer[i] == '\r' && buffer[i + 1] == '\n')) {
+	for (size_t i = 0; i < user.getMsg().size();i++) {
+		if ((user.getMsg()[i] == '\r' && user.getMsg()[i + 1] == '\n')) {
 			endPos = i;
-			_line.push_back(buffer.substr(startPos, endPos - startPos));
+			_line.push_back(user.getMsg().substr(startPos, endPos - startPos));
 			startPos = endPos + 2;
 		}
 		// /*testing*/
-		// else if (buffer[i] == '\n' && buffer[i - 1] != '\r') {
+		// else if (user.getMsg()[i] == '\n' && user.getMsg()[i - 1] != '\r') {
 		// 	endPos = i;
-		// 	_line.push_back(buffer.substr(startPos, endPos - startPos));
+		// 	_line.push_back(user.getMsg().substr(startPos, endPos - startPos));
 		// 	startPos = endPos + 1;
 		// }
 		// /*end testing*/

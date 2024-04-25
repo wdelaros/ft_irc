@@ -31,7 +31,7 @@ std::string Kick::execute(Server& server, User& eventUser, std::string& buffer) 
 			if (channel->getIsOp(eventUser)) {
 				if (channel->isUserInChannel(vec[2])) {
 					if (vec.size() == 4)
-						channel->KickUser(&eventUser, &channel->getUser(vec[2]), vec[3]);
+						channel->KickUser(&eventUser, &channel->getUser(vec[2]), vec[3].substr(1));
 					else
 						channel->KickUser(&eventUser, &channel->getUser(vec[2]), "has been kick");
 					if (!channel->getUserCount())

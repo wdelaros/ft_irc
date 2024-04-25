@@ -189,11 +189,11 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 	std::string finalMsg;
 	std::vector<std::string> vecCmd;
 
-	std::cout << eventUser.getNickname() << " "<< eventUser.getFd() << " :: " << buffer;
-
-	_cmdHandler.parseBuffer(buffer);
+	eventUser.setMsg(buffer);
+	_cmdHandler.parseBuffer(eventUser);
 	vecCmd = _cmdHandler.getVecCmd();
 	for (std::vector<std::string>::iterator it = vecCmd.begin(); it != vecCmd.end(); it++) {
+		std::cout << eventUser.getNickname() << " "<< eventUser.getFd() << " :: " << *it << std::endl;
 		_cmdHandler.createCommand();
 		if (_cmdHandler.getCmd()) {
 			if (!eventUser.getIsAuth())
@@ -207,6 +207,7 @@ void Server::handleMsg(const std::string& buffer, User& eventUser) {
 		if (!finalMsg.empty())
 			send(eventUser.getFd(), finalMsg.c_str(), finalMsg.size(), 0);
 		_cmdHandler.pop();
+		eventUser.clearMsg();
 	}
 }
 

@@ -31,6 +31,8 @@ std::string Username::execute(Server& server, User& eventUser, std::string& buff
 		else
 			return ERR_NOTREGISTERED((std::string)"You are not registered. Give a nickname (NICK <nickname>).");
 	}
+	if (vec[1] == "user")
+		return ERR_UNKNOWNERROR(eventUser.getNickname(), vec[0], "Invalid username");
 	buffer = buffer.substr(buffer.find_first_of(" \r\n") + 1);
 	eventUser.setUsername(buffer.substr(0, buffer.find_first_of(" \r\n")));
 	if (eventUser.getUsername().empty())

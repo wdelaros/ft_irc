@@ -1,5 +1,6 @@
 #include "../include/Mode.hpp"
 #include "../include/Server.hpp"
+#include <string>
 
 Mode::Mode(): _name("mode") {
 
@@ -115,14 +116,17 @@ std::string Mode::privilegeMode(Channel* chan, User& eventUser, char modif, User
 std::string Mode::limitMode(Channel* chan, User& eventUser, char modif, int limit) const
 {
 	std::string msg;
-	if (modif == '-')
+	if (modif == '-') {
 		chan->setMode('l', false);
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'l', "");
+	}
 	else if (chan->getUserCount() > limit)
 		return (ERR_UNKNOWNERROR(eventUser.getNickname(), "MODE", "Number of users in channel exceeds the limit set"));
-	else if (modif == '+')
+	else if (modif == '+') {
 		chan->setMode('l', true);
+		msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'l', std::to_string(limit));
+	}
 	chan->setLimitUser(limit);
-	msg = MODE(eventUser.getNickname(), chan->getName(), modif, 'l', "");
 	chan->sendBroadcastAll(msg);
 	return ("");
 }
@@ -185,7 +189,7 @@ std::string Mode::execute(Server& server, User& eventUser, std::string& buffer) 
 							else
 								msg = ERR_UNKNOWNERROR(eventUser.getNickname(), "MODE", "Invalid amount of argument");
 						}
-						else if (vec.size() == 4 && checkMode(vec[2], "kol"))
+						else if (vec.size() == 4 && checkMode(vec[2], "kol") && vec[2] != "-l")
 							msg = parseMode(channel, eventUser, vec[2], vec[3]);
 						else
 							msg = ERR_UNKNOWNERROR(eventUser.getNickname(), "MODE", "Invalid amount of argument");

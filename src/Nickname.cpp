@@ -42,7 +42,7 @@ std::string Nickname::execute(Server& server, User& eventUser, std::string& buff
 
 	if (vec[1].length() > 9)
 		msg = ERR_ERRONEUSNICKNAME(vec[1], "Nickname too long!");
-	else if (!isValidStr(vec[1], 0, "[]`{}|\\^_^"))
+	else if (!isValidStr(vec[1], 0, "[]`{}|\\^_^") || vec[1] == "user")
 		msg = ERR_ERRONEUSNICKNAME(vec[1], "Nickname invalid character!");
 	else if (server.nicknameInUse(vec[1]))
 		msg = ERR_NICKNAMEINUSE(vec[1]);
