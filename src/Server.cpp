@@ -1,4 +1,5 @@
 #include "../include/Server.hpp"
+#include <cstdlib>
 
 extern bool g_stop;
 
@@ -14,7 +15,7 @@ Server::Server(char **argv): _userCount(0) {
 	_password = argv[2];
 	if (port.empty())
 		throw std::invalid_argument("Error: port empty!");
-	else if (port.find_first_not_of("0123456789") != std::string::npos)
+	else if (port.find_first_not_of("0123456789") != std::string::npos || port.length() > 5 || atoi(port.c_str()) > 65535 || atoi(port.c_str()) < 1)
 		throw std::invalid_argument("Error: port invalid!");
 
 	if (_password.empty())
